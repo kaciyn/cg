@@ -11,7 +11,6 @@ layout(location = 0) out vec4 out_colour;
 void main() {
   // *********************************
   // Set out colour to sampled texture colour
-  tex=tex_coord;
   out_colour=texture(tex,tex_coord);
   // *********************************
 }
