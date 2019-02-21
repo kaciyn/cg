@@ -11,16 +11,24 @@ texture tex;
 free_camera cam;
 double cursor_x = 0.0;
 double cursor_y = 0.0;
-
+GLFWwindow* window;
 bool initialise() {
   // *********************************
   // Set input mode - hide the cursor
-
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   // Capture initial mouse position
 
+	glfwGetCursorPos(renderer::get_window() , &cursor_x , &cursor_y);
   // *********************************
   return true;
 }
+
+//int i = 1;
+//int* iPtr = &i;
+//
+//int* j = iPtr;
+//int k = *j;
+
 
 bool load_content() {
   // Create plane mesh
@@ -77,41 +85,52 @@ bool update(float delta_time) {
        (static_cast<float>(renderer::get_screen_height()) / static_cast<float>(renderer::get_screen_width()))) /
       static_cast<float>(renderer::get_screen_height());
 
+
   double current_x;
   double current_y;
   // *********************************
   // Get the current cursor position
+  glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
 
+  //glfwGetCursorPos(window, x,y);
   // Calculate delta of cursor positions from last frame
-
+  double delta_x = current_x - cursor_x;
+  double delta_y = current_y - cursor_y;
 
   // Multiply deltas by ratios - gets actual change in orientation
-
+  delta_x = delta_x * ratio_width;
+  delta_y = delta_y * ratio_height;
 
   // Rotate cameras by delta
   // delta_y - x-axis rotation
   // delta_x - y-axis rotation
-
+  cam.rotate(delta_x, -delta_y);
   // Use keyboard to move the camera - WSAD
 
+  float speed = 10.0f;
 
-
-
-
-
-
-
-
-
-
+	  if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		  cam.move(vec3(0,0,delta_time * speed));
+	  }
+	  if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		  cam.move(vec3(0,0, -delta_time * speed));
+	  }
+	  if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		  cam.move(vec3(-delta_time*speed, 0, 0));
+	  }
+	  if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		  cam.move(vec3(delta_time*speed, 0, 0));
+	  }
 
 
   // Move camera
 
   // Update the camera
+	  cam.update(delta_time);
 
   // Update cursor pos
-
+	  cursor_x = current_x;
+	  cursor_y = current_y;
 
   // *********************************
   return true;

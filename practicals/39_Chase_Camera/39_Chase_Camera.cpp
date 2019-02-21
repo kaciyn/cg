@@ -15,8 +15,9 @@ double cursor_y = 0.0;
 bool initialise() {
   // *********************************
   // Set input mode - hide the cursor
-
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   // Capture initial mouse position
+	glfwGetCursorPos(renderer::get_window(), &cursor_x, &cursor_y);
 
   // *********************************
 
