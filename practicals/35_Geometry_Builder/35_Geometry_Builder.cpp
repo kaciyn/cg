@@ -39,45 +39,41 @@ bool load_content() {
   // Set the transforms for your meshes here
   // 5x scale, move(-10.0f, 2.5f, -30.0f)
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
-  //meshes["box"].get_transform().scale(vec3(5));
-
-
+  meshes["box"].get_transform().scale=vec3(5.0f);
+  
   // 4x scale, move(-30.0f, 10.0f, -10.0f)
-
+  
   meshes["tetrahedron"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
-  //meshes["tetrahedron"].get_transform().scale(vec3(4));
-
+  meshes["tetrahedron"].get_transform().scale=vec3(4.0f);
+  
   // 5x scale, move(-10.0f, 7.5f, -30.0f)
-
+  
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
-  //meshes["pyramid"].get_transform().scale(vec3(5));
-
+  meshes["pyramid"].get_transform().scale = vec3(5.0f);
+  
   // scale(3.0f, 1.0f, 3.0f), move(-10.0f, 11.5f, -30.0f), 180 rotate X axis
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  //meshes["disk"].get_transform().rotate(vec3(1, 0, 0), 180);
-
-
-
-  // 5x scale, move(-25.0f, 2.5f, -25.0f)
-  meshes["cylinder"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
-  //meshes["cylinder"].get_transform().scale(vec3(5));
-
-
-  // 2.5x scale, move(-25.0f, 10.0f, -25.0f)
-  meshes["sphere"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
-  //meshes["sphere"].get_transform().scale(vec3(5));
-
-
+	//TODO ask about how this is actually meant to look
+  // meshes["disk"].get_transform().rotate(vec3(1.0f, 0, 0),180);
+  meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+   
+    // 5x scale, move(-25.0f, 2.5f, -25.0f)
+  meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+  meshes["cylinder"].get_transform().scale = vec3(5.0f);
+  
+    // 2.5x scale, move(-25.0f, 10.0f, -25.0f)
+  meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+  meshes["sphere"].get_transform().scale = vec3(2.5f);
+    
   // 180 rotate X axis, move(-25.0f, 10.0f, -25.0f)
-  meshes["torus"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
-  //meshes["torus"].get_transform().scale(vec3(5));
+  meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
 
 
   // *********************************
 
   // Load texture
   tex = texture("textures/checker.png");
-
+  //TODO texture is working here tho??????
   // Load in shaders
   eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
   eff.add_shader("27_Texturing_Shader/simple_texture.frag", GL_FRAGMENT_SHADER);

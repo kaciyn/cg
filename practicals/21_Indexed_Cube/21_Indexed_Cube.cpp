@@ -18,42 +18,52 @@ bool load_content() {
 		// *********************************
 		// Add the position data for cube corners here (8 total)
 		//front
+
+		//0 top right 
 		vec3(1,1,0),
+		//1 bottom right
 		vec3(1,-1,0),
+		//2 bottom left
 		vec3(-1,-1,0),
+		//3 top left
 		vec3(-1,1,0),
-	  //back
-		vec3(1,1,-2),
-		vec3(1, -1,-2),
-		vec3(-1,-1,-2),
-		vec3(-1,1,-2),
+		//back
 
+		  //4 top right
+		  vec3(1,1,-2),
+		  //5 bottom right
+		  vec3(1, -1,-2),
+		  //6 bottom left
+		  vec3(-1,-1,-2),
+		  //7 top left
+		  vec3(-1,1,-2),
 
-  // *********************************
+		  // *********************************
 	};
 	// Colours
 	vector<vec4> colours;
 	for (auto i = 0; i < positions.size(); ++i) {
-		colours.push_back(vec4((i + 1) % 2, 0.0f, i % 2, 1.0f));
+		colours.push_back(vec4(i % 2, 0.8, 1.0f, 0.9f));
 	}
 	// Create the index buffer
 	vector<GLuint> indices{
 		// *********************************
 		// Add index information here - 3 per triangle, 6 per face, 12 triangles
 		// Front
-		//TODO
+		2,1,3,3,1,0,
 		// Back
-
+		5,6,4,4,6,7,
 		// Right
-
+		1,5,0,0,5,4,
 		// Left
-
+		6,2,7,7,2,3,
 		// Top
-
+		3,0,7,7,0,4,
 		// Bottom
-
+		6,5,2,2,5,1
 		// *********************************
 	};
+
 	// Add to the geometry
 	geom.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
 	geom.add_buffer(colours, BUFFER_INDEXES::COLOUR_BUFFER);

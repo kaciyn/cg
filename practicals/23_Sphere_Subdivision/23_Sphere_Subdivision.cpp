@@ -18,7 +18,7 @@ void divide_triangle(const vector<vec3> &points, int divisions, vector<vec3> &po
   if (divisions > 0) {
     // *********************************
     // Calculate new vertices to work on (Normalize each element!)
-
+	  //TODO
 
     // Divide new triangles
 

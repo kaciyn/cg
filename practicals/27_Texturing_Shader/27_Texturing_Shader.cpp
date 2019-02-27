@@ -24,7 +24,7 @@ bool load_content() {
   // Add to the geometry
   geom.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
   // *********************************
-  // Add texture coordinate buffer to geometry
+  // Add texture coordinatite buffer to geometry
   geom.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
 
   // *********************************
