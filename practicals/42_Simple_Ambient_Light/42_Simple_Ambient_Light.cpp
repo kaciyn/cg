@@ -88,8 +88,11 @@ bool render() {
 
     // *********************************
     // Set material colour - all objects red
-
+	vec4 material_colour(1.0f,0.0f,0.0f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(material_colour));
     // Set ambient intensity - (0.3, 0.3, 0.3, 1.0)
+	vec4 ambient_intensity(0.3f, 0.3f, 0.3f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("ambient_intensity"), 1, value_ptr(ambient_intensity));
 
     // *********************************
     // Render mesh
