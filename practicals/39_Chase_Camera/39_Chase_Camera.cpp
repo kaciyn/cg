@@ -89,20 +89,25 @@ bool update(float delta_time) {
   double current_y;
   // *********************************
   // Get the current cursor position
+  glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
 
   // Calculate delta of cursor positions from last frame
-
+  double delta_x = current_x - cursor_x;
+  double delta_y = current_y - cursor_y;
 
   // Multiply deltas by ratios and delta_time - gets actual change in orientation
-
+  delta_x = delta_x * ratio_width;
+  delta_y = delta_y * ratio_height;
 
   // Rotate cameras by delta
   // x - delta_y
   // y - delta_x
   // z - 0
-
+  cam.rotate(vec3(delta_x, -delta_y, 0));
   // Use keyboard to rotate target_mesh - QE rotate on y-axis
-
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_Q)) {
+	  cam.rotate();
+  }
 
 
 

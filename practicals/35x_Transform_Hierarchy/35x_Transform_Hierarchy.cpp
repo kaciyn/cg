@@ -81,11 +81,13 @@ bool render() {
 	for (size_t i = 0; i < meshes.size(); i++) {
 		// *********************************
 		// SET M to be the usual mesh  transform matrix
-		//TODO what is the usual mesh transform matrix!!
 		// *********************************
-		auto M = meshes[i].get_transform().get_transform_matrix();
+		//TODO what is the usual mesh transform matrix!!is it this?
 
-		// auto MVP = P * V * M;
+		auto M = meshes[i].get_transform().get_transform_matrix();
+		auto V = cam.get_view();
+		auto P = cam.get_projection();
+		auto MVP = P * V * M;
 
 		// Apply the hierarchy chain
 		for (size_t j = i; j > 0; j--) {

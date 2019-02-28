@@ -13,10 +13,10 @@ target_camera cam;
 bool load_content() {
   // *********************************
   // Load in model, models/teapot.obj
-
+	mesh m(geometry("models/teapot.obj"));
   // Load in texture, textures/checker.png
-
-  // *********************************
+	tex = texture("textures/sign.jpg");
+	  // *********************************
 
   // Load in shaders
   eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
@@ -51,9 +51,11 @@ bool render() {
 
   // *********************************
   // Bind texture to renderer
+  renderer::bind(tex, 0);
 
   // Set the texture value for the shader here
-
+  glUniform1i(eff.get_uniform_location("tex"), 0);
+  //TODO is the issue here??
   // *********************************
 
   // Render mesh
