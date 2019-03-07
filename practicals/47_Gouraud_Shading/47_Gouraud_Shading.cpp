@@ -46,38 +46,91 @@ bool load_content() {
   // - all emissive is black
   // - all specular is white
   // - all shininess is 25
+
+  struct material
+  {
+	  vec4 diffuse_reflection;
+	  vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	  vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	  float shininess = 25.0f;
+  };
+
   // Red box
+  meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["box"].get_material().set_shininess(25.0f);
 
 
 
+  //// Green tetra
+  //struct Greentetra
+  //{
+	 // vec4 diffuse_reflection = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
 
-  // Green tetra
-
-
-
-
-  // Blue pyramid
-
-
-
-
-  // Yellow disk
+  //};
 
 
 
+  //// Blue pyramid
+  //struct Bluepyramid
+  //{
+	 // vec4 diffuse_reflection = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
 
-  // Magenta cylinder
+  //};
 
 
 
+  //// Yellow disk
+  //struct Yellowdisk
+  //{
+	 // vec4 diffuse_reflection = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
 
-  // Cyan sphere
+  //};
 
 
 
+  //// Magenta cylinder
+  //struct Magentacylinder
+  //{
+	 // vec4 diffuse_reflection = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
 
-  // White torus
+  //};
 
+
+
+  //// Cyan sphere
+  //struct Cyansphere
+  //{
+	 // vec4 diffuse_reflection = vec4(0.0f, 1.0f, 1.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
+
+  //};
+
+
+
+  //// White torus
+  //struct Whitetorus
+  //{
+	 // vec4 diffuse_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	 // float shininess = 25.0f;
+  //};
 
 
 
@@ -89,15 +142,17 @@ bool load_content() {
   // *********************************
   // Set lighting values
   // ambient intensity (0.3, 0.3, 0.3)
-
+  vec3 ambient_intensity = vec3(0.3, 0.3, 0.3);
   // Light colour white
-
+	  vec4 light_colour= vec4(1.0f, 1.0f, 1.0f, 1.0f);;
   // Light direction (1.0, 1.0, -1.0)
-
+	  vec3 light_dir= vec3 (1.0, 1.0, -1.0);
   // Load in shaders
-
+	  eff.add_shader("47_Gouraud_Shading/gouraud.vert", GL_VERTEX_SHADER);
+	  eff.add_shader("47_Gouraud_Shading/gouraud.frag", GL_FRAGMENT_SHADER);
 
   // Build effect
+	  eff.build();
 
   // *********************************
 
@@ -146,20 +201,30 @@ bool render() {
 
     // *********************************
     // Set M matrix uniform
+	glUniformMatrix3fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
 
     // Set N matrix uniform - remember - 3x3 matrix
+	mat3 N;
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
     // Bind material
+	renderer::bind(eff);
 
     // Bind light
+	renderer::bind(light,0);
 
     // Bind texture
+	renderer::bind(tex,0);
 
     // Set tex uniform
+	glUniform1i(eff.get_uniform_location("tex"), 0);
 
     // Set eye position - Get this from active camera
+	glUniform3fv(eff.get_uniform_location("eye_pos"),1, value_ptr(V));
+
 
     // Render mesh
+	renderer::render(m);
 
     // *********************************
   }

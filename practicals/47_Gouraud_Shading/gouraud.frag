@@ -16,8 +16,9 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Sample texture
-
+  tex_colour=texture(tex,tex_coord);
   // Calculate colour
+  out_colour=primary*tex_colour+secondary;
 
   // *********************************
 }
