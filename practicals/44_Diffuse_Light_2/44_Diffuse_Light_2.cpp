@@ -26,19 +26,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Load in shaders
   eff.add_shader("44_Diffuse_Light_2/working_diffuse.vert", GL_VERTEX_SHADER);
@@ -90,13 +96,20 @@ bool render() {
 
     // *********************************
     // Set N matrix uniform - remember - 3x3 matrix
+	mat3 N=m.get_transform().get_normal_matrix();
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
     // Set material colour - all objects red
+	vec4 material_colour(1.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(material_colour));
 
-    // Set light colour - (1.0, 1.0, 1.0, 1.0)
+	// Set light colour- (1.0, 1.0, 1.0, 1.0)
+	vec4 light_colour(1.0, 1.0, 1.0, 1.0);
+	glUniform4fv(eff.get_uniform_location("light_colour"), 1, value_ptr(light_colour));
 
-    // Set light direction - (1.0, 1.0, -1.0)
-
+	// Set light direction - (1.0, 1.0, -1.0)
+	vec3 light_direction(1.0, 1.0, -1.0);
+	glUniform3fv(eff.get_uniform_location("light_dir"), 1, value_ptr(light_direction));
     // *********************************
     // Render mesh
     renderer::render(m);

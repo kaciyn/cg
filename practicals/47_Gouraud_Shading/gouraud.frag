@@ -1,9 +1,7 @@
 #version 440
-
-// Texture to sample from
 uniform sampler2D tex;
 
-// Incoming primary colour
+// Incoming vertex colour
 layout(location = 0) in vec4 primary;
 // Incoming secondary colour
 layout(location = 1) in vec4 secondary;
@@ -15,10 +13,13 @@ layout(location = 0) out vec4 colour;
 
 void main() {
   // *********************************
-  // Sample texture
-  tex_colour=texture(tex,tex_coord);
-  // Calculate colour
-  out_colour=primary*tex_colour+secondary;
+  // Set outgoing vertex colour
+  vec4 tex_colour=texture(tex,tex_coord);
+
+ //colour=primary*tex_colour;
+  colour=primary*tex_colour+secondary;
+
+  //colour=tex_colour+primary;
 
   // *********************************
 }

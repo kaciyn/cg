@@ -26,19 +26,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Load in shaders
   eff.add_shader("46_Combined_Lighting/combined_lighting.vert", GL_VERTEX_SHADER);
@@ -90,22 +96,39 @@ bool render() {
     glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
     // *********************************
     // Set M matrix uniform
+	glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
 
     // Set N matrix uniform - remember - 3x3 matrix
+	mat3 N = m.get_transform().get_normal_matrix();
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
     // Set ambient intensity - (0.3, 0.3, 0.3, 1.0)
+	vec4 ambient_intensity(0.3f, 0.3f, 0.3f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("ambient_intensity"), 1, value_ptr(ambient_intensity));
 
     // Set light colour - (1.0, 1.0, 1.0, 1.0)
+	vec4 light_colour(1.0, 1.0, 1.0, 1.0);
+	glUniform4fv(eff.get_uniform_location("light_colour"), 1, value_ptr(light_colour));
 
     // Set light direction - (1.0, 1.0, -1.0)
+	vec3 light_direction(1.0, 1.0, -1.0);
+	glUniform3fv(eff.get_uniform_location("light_dir"), 1, value_ptr(light_direction));
 
     // Set diffuse reflection - all objects red
+	vec4 diffuse_reflection(1.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("diffuse_reflection"), 1, value_ptr(diffuse_reflection));
 
     // Set specular reflection - white
+	vec4 specular_reflection(1.0f, 1.0f, 1.0f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(specular_reflection));
 
     // Set shininess - Use 50.0f
+	float shininess(50.0f);
+	glUniform1f(eff.get_uniform_location("shininess"), shininess);
 
     // Set eye position - Get this from active camera
+	vec3 eye_pos(cam.get_position());
+	glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(eye_pos));
 
     // *********************************
     // Render mesh

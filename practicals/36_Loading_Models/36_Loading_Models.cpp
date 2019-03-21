@@ -54,8 +54,7 @@ bool render() {
   renderer::bind(tex, 0);
 
   // Set the texture value for the shader here
-  glUniform1i(eff.get_uniform_location("tex"), 0);
-  //TODO is the issue here??
+  glUniform1i(eff.get_uniform_location("tex"), 1);
   // *********************************
 
   // Render mesh

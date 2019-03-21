@@ -26,19 +26,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Load in shaders
   eff.add_shader("45_Specular_Light/simple_specular.vert", GL_VERTEX_SHADER);
@@ -67,6 +73,7 @@ bool update(float delta_time) {
     cam.set_position(vec3(50, 10, -50));
   }
 
+
   // Rotate the sphere
   meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
 
@@ -87,21 +94,37 @@ bool render() {
     auto P = cam.get_projection();
     auto MVP = P * V * M;
     // Set MVP matrix uniform
-    glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(eff.get_uniform_location("MVP"), // Location of uniform
+		1,                               // Number of values - 1 mat4
+		GL_FALSE,                        // Transpose the matrix?
+		value_ptr(MVP));                 // Pointer to matrix data
     // *********************************
     // Set M matrix uniform
+	glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
 
     // Set N matrix uniform - remember - 3x3 matrix
+	mat3 N = m.get_transform().get_normal_matrix();
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
     // Set material colour - specular material is white
+	vec4 material_colour(1.0f, 1.0f, 1.0f, 1.0f);
+	glUniform4fv(eff.get_uniform_location("material_colour"), 1, value_ptr(material_colour));
+    
+  	// Set shininess - Use 50.0f
+	float shininess(50.0f);
+	glUniform1f(eff.get_uniform_location("shininess"), shininess);
+   
+	// Set light colour- (1.0, 1.0, 1.0, 1.0)
+	vec4 light_colour(1.0, 1.0, 1.0, 1.0);
+	glUniform4fv(eff.get_uniform_location("light_colour"), 1, value_ptr(light_colour));
 
-    // Set shininess - Use 50.0f
-
-    // Set light colour - (1.0, 1.0, 1.0, 1.0)
-
-    // Set light direction- (1.0, 1.0, -1.0)
-
-    // Set eye position - Get this from active camera
+	// Set light direction - (1.0, 1.0, -1.0)
+	vec3 light_direction(1.0, 1.0, -1.0);
+	glUniform3fv(eff.get_uniform_location("light_dir"), 1, value_ptr(light_direction));
+    
+  	// Set eye position - Get this from active camera
+	vec3 eye_pos(cam.get_position());
+	glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(eye_pos));
 
     // *********************************
     // Render mesh

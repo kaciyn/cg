@@ -27,58 +27,77 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
 
+  meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
   // *********************************
   // Set materials
   // - all emissive is black
   // - all specular is white
   // - all shininess is 25
   // Red box
+  meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["box"].get_material().set_shininess(25.0f);
 
 
 
-
-  // Green tetra
-
-
-
-
-  // Blue pyramid
+  //// Green tetra
+  meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+  meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["tetra"].get_material().set_shininess(25.0f);
 
 
+  //// Blue pyramid
+  meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+  meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["pyramid"].get_material().set_shininess(25.0f);
+
+  //// Yellow disk
+  meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+  meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["disk"].get_material().set_shininess(25.0f);
 
 
-  // Yellow disk
+  //// Magenta cylinder
+  meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["cylinder"].get_material().set_shininess(25.0f);
 
 
+  //// Cyan sphere
+  meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+  meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["sphere"].get_material().set_shininess(25.0f);
 
 
-  // Magenta cylinder
-
-
-
-
-  // Cyan sphere
-
-
-
-
-  // White torus
-
-
+  //// White torus
+  meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  meshes["torus"].get_material().set_shininess(25.0f);
 
 
   // *********************************
@@ -89,6 +108,11 @@ bool load_content() {
   // *********************************
   // Set lighting values
   // Position (-25, 10, -10)
+  light.set_position(vec3((-25, 10, -10)));
+  light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+  light.set_range(20);
+  light.set_direction(normalize(vec3(1, -1, 0)));
+  light.set_power(1);
 
   // Light colour white
 
@@ -99,6 +123,8 @@ bool load_content() {
   // Set power to 1
 
   // Load in shaders
+  eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);
+  eff.add_shader("50_Spot_Light/spot.frag", GL_FRAGMENT_SHADER);
 
 
   // Build effect
@@ -192,21 +218,30 @@ bool render() {
                        GL_FALSE,                        // Transpose the matrix?
                        value_ptr(MVP));                 // Pointer to matrix data
     // *********************************
-    // Set M matrix uniform
+   // Set M matrix uniform
+	glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
 
-    // Set N matrix uniform - remember - 3x3 matrix
+	// Set N matrix uniform - remember - 3x3 matrix
+	mat3 N = m.get_transform().get_normal_matrix();
+	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
-    // Bind material
+	// Bind material
+	renderer::bind(m.get_material(), "mat");
 
     // Bind light
+	renderer::bind(light, "light");
 
-    // Bind texture
+	// Bind texture
+	renderer::bind(tex, 0);
 
-    // Set tex uniform
+	// Set tex uniform
+	glUniform1i(eff.get_uniform_location("tex"), 0);
 
-    // Set eye position- Get this from active camera
-
-    // Render mesh
+	// Set eye position- Get this from active camera
+	vec3 eye_pos(cam.get_position());
+	glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(eye_pos));
+	// Render mesh
+	renderer::render(m);
 
     // *********************************
   }

@@ -26,7 +26,12 @@ void main() {
   gl_Position = MVP * vec4(position, 1.0);
   // *********************************
   // Output other values to fragment shader
+  vec3 world_position=mat3(M)*position;
+  vertex_position=world_position;
 
+   transformed_normal=N*normal;
+
+  tex_coord_out=tex_coord_in;
 
 
   // *********************************

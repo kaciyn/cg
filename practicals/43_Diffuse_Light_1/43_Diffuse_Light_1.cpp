@@ -10,6 +10,20 @@ effect eff;
 texture tex;
 target_camera cam;
 
+double cursor_x = 0.0;
+double cursor_y = 0.0;
+GLFWwindow* window;
+
+bool initialise() {
+	// *********************************
+	// Set input mode - hide the cursor
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Capture initial mouse position
+
+	glfwGetCursorPos(renderer::get_window(), &cursor_x, &cursor_y);
+	// *********************************
+	return true;
+}
 bool load_content() {
   // Create plane mesh
   meshes["plane"] = mesh(geometry_builder::create_plane());
@@ -26,19 +40,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Load in shaders
   eff.add_shader("43_Diffuse_Light_1/simple_diffuse.vert", GL_VERTEX_SHADER);
@@ -54,25 +74,26 @@ bool load_content() {
 }
 
 bool update(float delta_time) {
-  if (glfwGetKey(renderer::get_window(), '1')) {
-    cam.set_position(vec3(50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '2')) {
-    cam.set_position(vec3(-50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '3')) {
-    cam.set_position(vec3(-50, 10, -50));
-  }
-  if (glfwGetKey(renderer::get_window(), '4')) {
-    cam.set_position(vec3(50, 10, -50));
-  }
+	if (glfwGetKey(renderer::get_window(), '1')) {
+		cam.set_position(vec3(50, 10, 50));
+	}
+	if (glfwGetKey(renderer::get_window(), '2')) {
+		cam.set_position(vec3(-50, 10, 50));
+	}
+	if (glfwGetKey(renderer::get_window(), '3')) {
+		cam.set_position(vec3(-50, 10, -50));
+	}
+	if (glfwGetKey(renderer::get_window(), '4')) {
+		cam.set_position(vec3(50, 10, -50));
+	}
 
-  // Rotate the sphere
-  meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
 
-  cam.update(delta_time);
+	// Rotate the sphere
+	meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
 
-  return true;
+	cam.update(delta_time);
+
+	return true;
 }
 
 bool render() {

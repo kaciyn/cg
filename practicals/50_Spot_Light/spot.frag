@@ -41,21 +41,60 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Calculate direction to the light
+  vec3 dir=normalize(spot.position-position);
 
   // Calculate distance to light
+ float d=distance(spot.position,position);
 
   // Calculate attenuation value
+  float kds=(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2)));
+  vec4 att=(1/kds)*spot.light_colour;
 
   // Calculate spot light intensity
+  vec4 spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
 
   // Calculate light colour
+	vec4 light_colour=spot.light_colour;
 
   // Calculate view direction
+  vec3 view_dir=normalize(eye_pos-position);
 
   // Now use standard phong shading but using calculated light colour and direction
   // - note no ambient
 
+  // Now use standard phong shading but using calculated light colour and direction
+  // - note no ambient
+     // Calculate diffuse component
+   // Calculate k
+  float k = max(dot(normal, dir), 0.0);
 
+  // Calculate diffuse
+  vec4 diffuse = k * (mat.diffuse_reflection * colour);
+
+  // Calculate half vector
+  vec3 half_vector=normalize(dir+view_dir);
+
+  // Calculate specular component
+  float n_h=dot(normal,half_vector);
+  float max_n_h=max(n_h,0.0f);
+  float specular_intensity=pow(max_n_h,mat.shininess);
+  vec4 specular=specular_intensity*mat.specular_reflection*colour;
+
+  // Calculate primary colour component
+  vec4 primary=mat.emissive+diffuse;
+
+  // Calculate final colour - remember alpha
+  vec4 secondary=specular;
+
+  //set alphas
+  primary.a = 1.0f;
+  secondary.a=1.0f;
+
+  //calculate colour
+  vec4 tex_colour=texture(tex,tex_coord);
+  // colour=primary*tex_colour+secondary;
+
+  colour=tex_colour+secondary;
 
 
 

@@ -11,6 +11,7 @@ effect eff;
 mesh plane_mesh;
 texture plane_tex;
 target_camera cam;
+float theta;
 
 bool load_content() {
 	// Create plane mesh
@@ -18,16 +19,16 @@ bool load_content() {
 
 	// *********************************
 	// Create Three Identical Box Meshes
-	meshes = { mesh(geometry_builder::create_box(vec3(5, 5, 5))),mesh(geometry_builder::create_box(vec3(5, 5, 5))),mesh(geometry_builder::create_box(vec3(5, 5, 5))) };
+	meshes = { mesh(geometry_builder::create_box(vec3(1, 1, 1))),mesh(geometry_builder::create_box(vec3(1, 1, 1))),mesh(geometry_builder::create_box(vec3(1, 1, 1))) };
 
 	// Move Box One to (0,1,0)
-	meshes[1].get_transform().translate(vec3(0, 1, 0));
+	meshes[0].get_transform().translate(vec3(0, 1, 0));
 
 	// Move Box Two to (0,0,1)
-	meshes[2].get_transform().translate(vec3(0, 0, 1));
+	meshes[1].get_transform().translate(vec3(0, 0, 1));
 
 	// Move Box Three to (0,1,0)
-	meshes[3].get_transform().translate(vec3(0, 1, 0));
+	meshes[2].get_transform().translate(vec3(0, 1, 0));
 
 	// *********************************
 
@@ -54,11 +55,13 @@ bool load_content() {
 bool update(float delta_time) {
 	// *********************************
 	// rotate Box one on Y axis by delta_time
-  // meshes[1].get_transform().rotate(vec3(0, 1.0f, 0),delta_time);
+  meshes[0].get_transform().rotate(vec3(0.0f,0.01f,0.0f));
 	//?????????
 	// rotate Box Two on Z axis by delta_time
-
+  meshes[1].get_transform().rotate(vec3(0.0f,  0.0f, 0.01f));
+ 
 	// rotate Box Three on Y axis by delta_time
+  meshes[2].get_transform().rotate(vec3(0.01f, 0.0f, 0.0f));
 
 	// *********************************
 	// Update the camera
@@ -85,14 +88,15 @@ bool render() {
 		//TODO what is the usual mesh transform matrix!!is it this?
 
 		auto M = meshes[i].get_transform().get_transform_matrix();
-		auto V = cam.get_view();
-		auto P = cam.get_projection();
-		auto MVP = P * V * M;
+		// auto MVP = P * V * M;
 
 		// Apply the hierarchy chain
 		for (size_t j = i; j > 0; j--) {
 			M = meshes[j - 1].get_transform().get_transform_matrix() * M;
 		}
+
+		// auto V = cam.get_view();
+		// auto P = cam.get_projection();
 
 		// Set MVP matrix uniform
 		glUniformMatrix4fv(loc, 1, GL_FALSE, value_ptr(PV * M));

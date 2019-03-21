@@ -12,233 +12,202 @@ target_camera cam;
 directional_light light;
 
 bool load_content() {
-  // Create plane mesh
-  meshes["plane"] = mesh(geometry_builder::create_plane());
+	// Create plane mesh
+	meshes["plane"] = mesh(geometry_builder::create_plane());
 
-  // Create scene
-  meshes["box"] = mesh(geometry_builder::create_box());
-  meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());
-  meshes["pyramid"] = mesh(geometry_builder::create_pyramid());
-  meshes["disk"] = mesh(geometry_builder::create_disk(20));
-  meshes["cylinder"] = mesh(geometry_builder::create_cylinder(20, 20));
-  meshes["sphere"] = mesh(geometry_builder::create_sphere(20, 20));
-  meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
+	// Create scene
+	meshes["box"] = mesh(geometry_builder::create_box());
+	meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());
+	meshes["pyramid"] = mesh(geometry_builder::create_pyramid());
+	meshes["disk"] = mesh(geometry_builder::create_disk(20));
+	meshes["cylinder"] = mesh(geometry_builder::create_cylinder(20, 20));
+	meshes["sphere"] = mesh(geometry_builder::create_sphere(20, 20));
+	meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
 
-  // Transform objects
-  meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
-  meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
-  meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
-  meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
-  meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
-  meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
-  meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
-  meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
-  meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+	// Transform objects
+	meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
 
-  // *********************************
-  // Set materials
-  // - all emissive is black
-  // - all specular is white
-  // - all shininess is 25
+	meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
+	meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
 
-  struct material
-  {
-	  vec4 diffuse_reflection;
-	  vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	  vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	  float shininess = 25.0f;
-  };
+	meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
 
-  // Red box
-  meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
-  meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["box"].get_material().set_shininess(25.0f);
+	meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+	meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
+	meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
+	meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
+	meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
+	meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
+	meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+	meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
+	// *********************************
+	// Set materials
+	// - all emissive is black
+	// - all specular is white
+	// - all shininess is 25
+
+	// Red box
+	meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["box"].get_material().set_shininess(25.0f);
 
 
 
-  //// Green tetra
-  //struct Greentetra
-  //{
-	 // vec4 diffuse_reflection = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-
-  //};
+	//// Green tetra
+	meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["tetra"].get_material().set_shininess(25.0f);
 
 
+	//// Blue pyramid
+	meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_shininess(25.0f);
 
-  //// Blue pyramid
-  //struct Bluepyramid
-  //{
-	 // vec4 diffuse_reflection = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-
-  //};
-
-
-
-  //// Yellow disk
-  //struct Yellowdisk
-  //{
-	 // vec4 diffuse_reflection = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-
-  //};
+	//// Yellow disk
+	meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["disk"].get_material().set_shininess(25.0f);
 
 
-
-  //// Magenta cylinder
-  //struct Magentacylinder
-  //{
-	 // vec4 diffuse_reflection = vec4(1.0f, 0.0f, 1.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-
-  //};
+	//// Magenta cylinder
+	meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_shininess(25.0f);
 
 
-
-  //// Cyan sphere
-  //struct Cyansphere
-  //{
-	 // vec4 diffuse_reflection = vec4(0.0f, 1.0f, 1.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-
-  //};
+	//// Cyan sphere
+	meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_shininess(25.0f);
 
 
-
-  //// White torus
-  //struct Whitetorus
-  //{
-	 // vec4 diffuse_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // vec4 emissive = vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	 // vec4 specular_reflection = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	 // float shininess = 25.0f;
-  //};
+	//// White torus
+	meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_shininess(25.0f);
 
 
+	// *********************************
 
-  // *********************************
+	// Load texture
+	tex = texture("textures/checker.png");
 
-  // Load texture
-  tex = texture("textures/checker.png");
+	// *********************************
+	// Set lighting values
+	// ambient intensity (0.3, 0.3, 0.3)
+	light.set_ambient_intensity(vec4(0.3, 0.3, 0.3, 1.0f));
 
-  // *********************************
-  // Set lighting values
-  // ambient intensity (0.3, 0.3, 0.3)
-  vec3 ambient_intensity = vec3(0.3, 0.3, 0.3);
-  // Light colour white
-	  vec4 light_colour= vec4(1.0f, 1.0f, 1.0f, 1.0f);;
-  // Light direction (1.0, 1.0, -1.0)
-	  vec3 light_dir= vec3 (1.0, 1.0, -1.0);
-  // Load in shaders
-	  eff.add_shader("47_Gouraud_Shading/gouraud.vert", GL_VERTEX_SHADER);
-	  eff.add_shader("47_Gouraud_Shading/gouraud.frag", GL_FRAGMENT_SHADER);
+	// Light colour white
+	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-  // Build effect
-	  eff.build();
+	// Light direction (1.0, 1.0, -1.0)
+	light.set_direction(vec3(1.0, 1.0, -1.0));
 
-  // *********************************
+	// Load in shaders
+	eff.add_shader("47_Gouraud_Shading/gouraud.vert", GL_VERTEX_SHADER);
+	eff.add_shader("47_Gouraud_Shading/gouraud.frag", GL_FRAGMENT_SHADER);
 
-  // Set camera properties
-  cam.set_position(vec3(50.0f, 10.0f, 50.0f));
-  cam.set_target(vec3(0.0f, 0.0f, 0.0f));
-  cam.set_projection(quarter_pi<float>(), renderer::get_screen_aspect(), 0.1f, 1000.0f);
-  return true;
+	// Build effect
+	eff.build();
+
+	// *********************************
+
+	// Set camera properties
+	cam.set_position(vec3(50.0f, 10.0f, 50.0f));
+	cam.set_target(vec3(0.0f, 0.0f, 0.0f));
+	cam.set_projection(quarter_pi<float>(), renderer::get_screen_aspect(), 0.1f, 1000.0f);
+	return true;
 }
 
 bool update(float delta_time) {
-  if (glfwGetKey(renderer::get_window(), '1')) {
-    cam.set_position(vec3(50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '2')) {
-    cam.set_position(vec3(-50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '3')) {
-    cam.set_position(vec3(-50, 10, -50));
-  }
-  if (glfwGetKey(renderer::get_window(), '4')) {
-    cam.set_position(vec3(50, 10, -50));
-  }
+	if (glfwGetKey(renderer::get_window(), '1')) {
+		cam.set_position(vec3(50, 10, 50));
+	}
+	if (glfwGetKey(renderer::get_window(), '2')) {
+		cam.set_position(vec3(-50, 10, 50));
+	}
+	if (glfwGetKey(renderer::get_window(), '3')) {
+		cam.set_position(vec3(-50, 10, -50));
+	}
+	if (glfwGetKey(renderer::get_window(), '4')) {
+		cam.set_position(vec3(50, 10, -50));
+	}
 
-  // Rotate the sphere
-  meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
+	// Rotate the sphere
+	meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
 
-  cam.update(delta_time);
+	cam.update(delta_time);
 
-  return true;
+	return true;
 }
 
 bool render() {
-  // Render meshes
-  for (auto &e : meshes) {
-    auto m = e.second;
-    // Bind effect
-    renderer::bind(eff);
-    // Create MVP matrix
-    auto M = m.get_transform().get_transform_matrix();
-    auto V = cam.get_view();
-    auto P = cam.get_projection();
-    auto MVP = P * V * M;
-    // Set MVP matrix uniform
-    glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	// Render meshes
+	for (auto &e : meshes) {
+		auto m = e.second;
+		// Bind effect
+		renderer::bind(eff);
+		// Create MVP matrix
+		auto M = m.get_transform().get_transform_matrix();
+		auto V = cam.get_view();
+		auto P = cam.get_projection();
+		auto MVP = P * V * M;
+		// Set MVP matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+		// *********************************
+		// Set M matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
 
-    // *********************************
-    // Set M matrix uniform
-	glUniformMatrix3fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
+		// Set N matrix uniform - remember - 3x3 matrix
+		mat3 N = m.get_transform().get_normal_matrix();
+		glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
 
-    // Set N matrix uniform - remember - 3x3 matrix
-	mat3 N;
-	glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(N));
+		// Bind material
+		renderer::bind(m.get_material(), "mat");
 
-    // Bind material
-	renderer::bind(eff);
+		// Bind light
+		renderer::bind(light, "light");
 
-    // Bind light
-	renderer::bind(light,0);
+		// Bind texture
+		renderer::bind(tex, 0);
 
-    // Bind texture
-	renderer::bind(tex,0);
+		// Set tex uniform
+		glUniform1i(eff.get_uniform_location("tex"), 0);
 
-    // Set tex uniform
-	glUniform1i(eff.get_uniform_location("tex"), 0);
+		// Set eye position - Get this from active camera
+		glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(V));
 
-    // Set eye position - Get this from active camera
-	glUniform3fv(eff.get_uniform_location("eye_pos"),1, value_ptr(V));
+		// Render mesh
+		renderer::render(m);
 
+		// *********************************
+	}
 
-    // Render mesh
-	renderer::render(m);
-
-    // *********************************
-  }
-
-  return true;
+	return true;
 }
 
 void main() {
-  // Create application
-  app application("47_Gouraud_Shading");
-  // Set load content, update and render methods
-  application.set_load_content(load_content);
-  application.set_update(update);
-  application.set_render(render);
-  // Run application
-  application.run();
+	// Create application
+	app application("47_Gouraud_Shading");
+	// Set load content, update and render methods
+	application.set_load_content(load_content);
+	application.set_update(update);
+	application.set_render(render);
+	// Run application
+	application.run();
 }
