@@ -47,6 +47,54 @@ bool load_content() {
 	meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
 	meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
+	// Red box
+	meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["box"].get_material().set_shininess(25.0f);
+
+
+
+	//// Green tetra
+	meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["tetra"].get_material().set_shininess(25.0f);
+
+
+	//// Blue pyramid
+	meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_shininess(25.0f);
+
+	//// Yellow disk
+	meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["disk"].get_material().set_shininess(25.0f);
+
+
+	//// Magenta cylinder
+	meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_shininess(25.0f);
+
+
+	//// Cyan sphere
+	meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_shininess(25.0f);
+
+
+	//// White torus
+	meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_shininess(25.0f);
+
 
 	// *********************************
 	// Set materials
@@ -102,24 +150,21 @@ bool load_content() {
 	meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	meshes["torus"].get_material().set_shininess(25.0f);
 
-
 	// *********************************
 
 	// Load texture
 	tex = texture("textures/checker.png");
 	// *********************************
 	// Set lighting values, Position (-25, 10, -10)
+	light.set_position(vec3((-25, 10, -10)));
 
 	// Light colour white
+	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// Set range to 20
-	// Set lighting values
-	  // *********************************
-	  // Point 0, Position (-25, 5, -15)
-	  // Red, 20 range
-	light.set_position(vec3((-25, 5, -15)));
-	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	light.set_range(20);
+	light.set_range(20.0f);
+
+
 	// Load in shaders
 	eff.add_shader("49_Point_Light/point.vert", GL_VERTEX_SHADER);
 	eff.add_shader("49_Point_Light/point.frag", GL_FRAGMENT_SHADER);
@@ -141,36 +186,29 @@ bool update(float delta_time) {
 	static float range = 20.0f;
 	// *********************************
 
-
-
-
-
-
-
-
-
-
-
-
 	// WSAD to move point light
+	float speed = 10.0f;
 
-
-
-
-
-
-
-
-
-
-
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		light.move(vec3(0, 0, delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		light.move(vec3(0, 0, -delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		light.move(vec3(-delta_time * speed, 0, 0));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		light.move(vec3(delta_time*speed, 0, 0));
+	}
 
 	// O and P to change range
-
-
-
-
-
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
+		range += delta_time * 1.0f;
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
+		range -= delta_time*1.0f;
+	}
 
 	// *********************************
 

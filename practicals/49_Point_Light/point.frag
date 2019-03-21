@@ -44,6 +44,7 @@ void main() {
   // Calculate attenuation factor
  float kds=point.constant+(point.linear*d)+(point.quadratic*pow(d,2));
   vec4 att=(1/kds)*point.light_colour;
+
   // Calculate light colour
   vec4 colour=point.light_colour;
 
@@ -53,6 +54,7 @@ void main() {
   // Now use standard phong shading but using calculated light colour and direction
   // - note no ambient
      // Calculate diffuse component
+
    // Calculate k
   float k = max(dot(normal, dir), 0.0);
 
@@ -81,8 +83,5 @@ void main() {
 
   //calculate colour
   vec4 tex_colour=texture(tex,tex_coord);
-  colour=primary*tex_colour+secondary;
-
-  //colour=tex_colour+secondary;
-   
+  colour=primary*tex_colour+secondary;   
 }

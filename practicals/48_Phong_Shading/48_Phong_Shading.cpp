@@ -25,6 +25,27 @@ bool load_content() {
 	meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
 
 	// Transform objects
+	meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
+	meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
+	meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
+	meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
+	meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+	meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
+	meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
+	meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
+	meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
+	meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
+	meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+	meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
 	// Red box
 	meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -135,9 +156,9 @@ bool load_content() {
 	tex = texture("textures/checker.png");
 	// *********************************
 	// ambient intensity (0.3, 0.3, 0.3)
-	light.set_ambient_intensity(vec4((0.3, 0.3, 0.3,0.1)));
+	light.set_ambient_intensity(vec4((0.3, 0.3, 0.3,1.0)));
 	// Light colour white
-	light.set_light_colour(vec4((0.1, 0.1, 0.1, 0.1)));
+	light.set_light_colour(vec4((1.0, 1.0, 1.0, 1.0)));
 
 	// Light direction (1.0, 1.0, -1.0)
 	light.set_direction(vec3((1.0, 1.0, -1.0)));
@@ -147,7 +168,7 @@ bool load_content() {
 	eff.add_shader("48_Phong_Shading/phong.frag", GL_FRAGMENT_SHADER);
 
 	// Build effect
-
+	eff.build();
 	// *********************************
 
 	// Set camera properties

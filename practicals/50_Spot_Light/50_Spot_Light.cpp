@@ -108,19 +108,20 @@ bool load_content() {
   // *********************************
   // Set lighting values
   // Position (-25, 10, -10)
-  light.set_position(vec3((-25, 10, -10)));
-  light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  light.set_range(20);
-  light.set_direction(normalize(vec3(1, -1, 0)));
-  light.set_power(1);
+  light.set_position(vec3((-25.0f, 10.0f, -10.0f)));
+  //light.set_position(vec3((0.0f,0.0f,0.0f)));
+
 
   // Light colour white
-
+  light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+ 
   // Light direction to forward and down (normalized)
-
+  light.set_direction(normalize(vec3(1.0f, 1.0f, 1.0f)));
   // Set range to 20
+  light.set_range(20.0f);
 
   // Set power to 1
+  light.set_power(1.0f);
 
   // Load in shaders
   eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);
@@ -128,7 +129,7 @@ bool load_content() {
 
 
   // Build effect
-
+  eff.build();
 
   // *********************************
   // Set camera properties
@@ -144,51 +145,60 @@ bool update(float delta_time) {
 
   // *********************************
 
+	// WSAD to move point light
+  float speed = 10.0f;
 
-
-
-
-
-
-
-
-
-
-
-  // WSAD to move point light
-
-
-
-
-
-
-
-
-
-
-
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+	  light.move(vec3(0, 0, delta_time * speed));
+  }
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+	  light.move(vec3(0, 0, -delta_time * speed));
+  }
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+	  light.move(vec3(-delta_time * speed, 0, 0));
+  }
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+	  light.move(vec3(delta_time*speed, 0, 0));
+  }
 
   // O and P to change range
-
-
-
-
-
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
+	  range += delta_time * 1.0f;
+  }
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
+	  range -= delta_time * 1.0f;
+  }
 
   // Cursor keys to rotate camera on X and Y axis
 
+ 
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_1)) {
+	  cam.set_position(vec3(50, 10, 50));
+  }
+
+
+  // 2 - (-50, 10, 50)
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_2)) {
+	  cam.set_position(vec3(-50, 10, 50));
+  }
 
 
 
+  // 3 - (-50, 10, -50)
+
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_3)) {
+	  cam.set_position(vec3(-50, 10, -50));
+  }
 
 
 
+  // 4 - (50, 10, -50)
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_4)) {
+	  cam.set_position(vec3(50, 10, -50));
+  }
 
 
-
-
-
-  // *********************************
+     // *********************************
 
   // Set range
   light.set_range(range);

@@ -88,13 +88,13 @@ void main() {
 
   //set alphas
   primary.a = 1.0f;
-  secondary.a=1.0f;
+  secondary.a = 1.0f;
 
   //calculate colour
   vec4 tex_colour=texture(tex,tex_coord);
-  // colour=primary*tex_colour+secondary;
+   //colour=primary*tex_colour+secondary;
 
-  colour=tex_colour+secondary;
+  colour=tex_colour;
 
 
 
