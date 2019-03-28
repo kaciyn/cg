@@ -59,8 +59,6 @@ void main() {
   // Calculate view direction
   vec3 view_dir=normalize(eye_pos-position);
 
-  // Now use standard phong shading but using calculated light colour and direction
-  // - note no ambient
 
   // Now use standard phong shading but using calculated light colour and direction
   // - note no ambient
@@ -69,7 +67,7 @@ void main() {
   float k = max(dot(normal, dir), 0.0);
 
   // Calculate diffuse
-  vec4 diffuse = k * (mat.diffuse_reflection * colour);
+  vec4 diffuse = k * (mat.diffuse_reflection * light_colour);
 
   // Calculate half vector
   vec3 half_vector=normalize(dir+view_dir);
@@ -78,7 +76,7 @@ void main() {
   float n_h=dot(normal,half_vector);
   float max_n_h=max(n_h,0.0f);
   float specular_intensity=pow(max_n_h,mat.shininess);
-  vec4 specular=specular_intensity*mat.specular_reflection*colour;
+  vec4 specular=specular_intensity*mat.specular_reflection*light_colour;
 
   // Calculate primary colour component
   vec4 primary=mat.emissive+diffuse;
@@ -89,15 +87,11 @@ void main() {
   //set alphas
   primary.a = 1.0f;
   secondary.a = 1.0f;
+  light_colour.a=1.0f;
 
   //calculate colour
   vec4 tex_colour=texture(tex,tex_coord);
-   //colour=primary*tex_colour+secondary;
-
-  colour=tex_colour;
-
-
-
+   colour=primary*tex_colour+secondary;
 
   // *********************************
 }

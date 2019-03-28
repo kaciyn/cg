@@ -239,7 +239,7 @@ bool render() {
 	renderer::bind(m.get_material(), "mat");
 
     // Bind light
-	renderer::bind(light, "light");
+	renderer::bind(light, "spot");
 
 	// Bind texture
 	renderer::bind(tex, 0);

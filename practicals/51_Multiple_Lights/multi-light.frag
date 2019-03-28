@@ -52,7 +52,7 @@ layout(location = 0) out vec4 colour;
 // Point light calculation
 vec4 calculate_point(in point_light point, in material mat, in vec3 position, in vec3 normal, in vec3 view_dir,
                      in vec4 tex_colour) {
-  // *********************************
+   // *********************************
   // Get distance between point light and vertex
  float d=distance(point.position,position);
 
@@ -61,15 +61,15 @@ vec4 calculate_point(in point_light point, in material mat, in vec3 position, in
   vec4 att=(1/kds)*point.light_colour;
 
   // Calculate light colour
-	vec4 light_colour=point.light_colour;
-	
+  vec4 light_colour=point.light_colour*att;
+
   // Calculate light dir
   vec3 dir=normalize(point.position-position);
 
   // Now use standard phong shading but using calculated light colour and direction
   // - note no ambient
+     // Calculate diffuse component
 
-      // Calculate diffuse component
    // Calculate k
   float k = max(dot(normal, dir), 0.0);
 
@@ -77,14 +77,13 @@ vec4 calculate_point(in point_light point, in material mat, in vec3 position, in
   vec4 diffuse = k * (mat.diffuse_reflection * light_colour);
 
   // Calculate half vector
-    vec3 half_vector=normalize(dir+view_dir);
+  vec3 half_vector=normalize(dir+view_dir);
 
   // Calculate specular component
-   float n_h=dot(normal,half_vector);
+  float n_h=dot(normal,half_vector);
   float max_n_h=max(n_h,0.0f);
   float specular_intensity=pow(max_n_h,mat.shininess);
   vec4 specular=specular_intensity*mat.specular_reflection*light_colour;
-  //vec4 specular=pow(max(dot(normal,half_vector),0.0f),mat.shininess)*(mat.specular_reflection*light_colour);
 
   // Calculate primary colour component
   vec4 primary=mat.emissive+diffuse;
@@ -92,37 +91,38 @@ vec4 calculate_point(in point_light point, in material mat, in vec3 position, in
   // Calculate final colour - remember alpha
   vec4 secondary=specular;
 
-  //set alphas
-    primary.a = 1.0f;
+   //set alphas
+  primary.a = 1.0f;
   secondary.a=1.0f;
+  light_colour.a=1.0f;
 
   //calculate colour
-    colour=primary*tex_colour+secondary;
-   
+  colour=primary*tex_colour+secondary;  
   return colour;
 }
 
 // Spot light calculation
 vec4 calculate_spot(in spot_light spot, in material mat, in vec3 position, in vec3 normal, in vec3 view_dir,
                      in vec4 tex_colour) {
-  // *********************************
-  // Calculate direction to the light
   vec3 dir=normalize(spot.position-position);
+
   // Calculate distance to light
  float d=distance(spot.position,position);
 
   // Calculate attenuation value
-  vec4 att=(1/(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2))))*spot.light_colour;
+  float kds=(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2)));
+  vec4 att=(1/kds)*spot.light_colour;
 
   // Calculate spot light intensity
   vec4 spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
 
-    // Calculate light colour
+  // Calculate light colour
 	vec4 light_colour=spot.light_colour;
+
+
   // Now use standard phong shading but using calculated light colour and direction
   // - note no ambient
-
-    // Calculate diffuse component
+     // Calculate diffuse component
    // Calculate k
   float k = max(dot(normal, dir), 0.0);
 
@@ -130,10 +130,10 @@ vec4 calculate_spot(in spot_light spot, in material mat, in vec3 position, in ve
   vec4 diffuse = k * (mat.diffuse_reflection * light_colour);
 
   // Calculate half vector
-    vec3 half_vector=normalize(dir+view_dir);
+  vec3 half_vector=normalize(dir+view_dir);
 
   // Calculate specular component
-   float n_h=dot(normal,half_vector);
+  float n_h=dot(normal,half_vector);
   float max_n_h=max(n_h,0.0f);
   float specular_intensity=pow(max_n_h,mat.shininess);
   vec4 specular=specular_intensity*mat.specular_reflection*light_colour;
@@ -146,11 +146,13 @@ vec4 calculate_spot(in spot_light spot, in material mat, in vec3 position, in ve
 
   //set alphas
   primary.a = 1.0f;
-  secondary.a=1.0f;
+  secondary.a = 1.0f;
+  light_colour.a=1.0f;
 
   //calculate colour
-  colour=primary*tex_colour+secondary;
-   
+   colour=primary*tex_colour+secondary;
+
+
   return colour;
 }
 

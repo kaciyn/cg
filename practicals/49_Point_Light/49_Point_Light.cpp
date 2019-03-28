@@ -190,10 +190,10 @@ bool update(float delta_time) {
 	float speed = 10.0f;
 
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
-		light.move(vec3(0, 0, delta_time * speed));
+		light.move(vec3(0, 0, -delta_time * speed));
 	}
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
-		light.move(vec3(0, 0, -delta_time * speed));
+		light.move(vec3(0, 0, delta_time * speed));
 	}
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
 		light.move(vec3(-delta_time * speed, 0, 0));
@@ -204,11 +204,41 @@ bool update(float delta_time) {
 
 	// O and P to change range
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
-		range += delta_time * 1.0f;
+		range -= delta_time * 10.0f;
 	}
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
-		range -= delta_time*1.0f;
+		range += delta_time*10.0f;
 	}
+
+
+	// Cursor keys to rotate camera on X and Y axis
+
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_1)) {
+		cam.set_position(vec3(50, 10, 50));
+	}
+
+
+	// 2 - (-50, 10, 50)
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_2)) {
+		cam.set_position(vec3(-50, 10, 50));
+	}
+
+
+
+	// 3 - (-50, 10, -50)
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_3)) {
+		cam.set_position(vec3(-50, 10, -50));
+	}
+
+
+
+	// 4 - (50, 10, -50)
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_4)) {
+		cam.set_position(vec3(50, 10, -50));
+	}
+
 
 	// *********************************
 
@@ -252,7 +282,7 @@ bool render() {
 		renderer::bind(m.get_material(), "mat");
 
 		// Bind light
-		renderer::bind(light, "light");
+		renderer::bind(light, "point");
 
 		// Bind texture
 		renderer::bind(tex, 0);
