@@ -55,8 +55,10 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Sample texture
+  vec4 tex_colour=texture(tex,tex_coord);
 
   // Calculate view direction
+  vec3 view_dir=normalize(eye_pos-position);
 
   // Calculate normal from normal map
 
