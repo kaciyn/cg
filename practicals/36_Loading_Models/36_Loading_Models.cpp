@@ -14,7 +14,7 @@ bool load_content() {
   // *********************************
   // Load in model, models/teapot.obj
 	mesh m(geometry("models/teapot.obj"));
-  // Load in texture, textures/checker.png
+  // Load in texture, textures/checked.gif
 	tex = texture("textures/sign.jpg");
 	  // *********************************
 

@@ -80,7 +80,7 @@ bool load_content() {
   meshes["torus"].get_material().set_shininess(25.0f);
 
   // Load texture
-  tex = texture("textures/checker.png");
+  tex = texture("textures/checked.gif");
 
   // Set lighting values
   light.set_ambient_intensity(vec4(0.3f, 0.3f, 0.3f, 1.0f));

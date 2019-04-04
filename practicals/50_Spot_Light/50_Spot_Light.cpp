@@ -51,8 +51,9 @@ bool load_content() {
   // - all emissive is black
   // - all specular is white
   // - all shininess is 25
-  // Red box
-  meshes["box"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+
+	// Red box
+  meshes["box"].get_material().set_diffuse(vec4(1.0f, 0.0f, 0.0f, 1.0f));
   meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
   meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["box"].get_material().set_shininess(25.0f);
@@ -98,12 +99,10 @@ bool load_content() {
   meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
   meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
   meshes["torus"].get_material().set_shininess(25.0f);
-
-
   // *********************************
 
   // Load texture
-  tex = texture("textures/checker.png");
+  tex = texture("textures/checked.gif");
 
   // *********************************
   // Set lighting values
@@ -116,7 +115,8 @@ bool load_content() {
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
  
   // Light direction to forward and down (normalized)
-  light.set_direction(normalize(vec3(1.0f, 1.0f, 1.0f)));
+  light.set_direction(normalize(vec3(1.0f, 1.0f, -1.0f)));
+
   // Set range to 20
   light.set_range(20.0f);
 

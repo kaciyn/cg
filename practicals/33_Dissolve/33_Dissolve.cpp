@@ -30,7 +30,7 @@ bool load_content() {
   eff.build();
 
   // Load in textures
-  tex = texture("textures/checker.png");
+  tex = texture("textures/checked.gif");
   dissolve = texture("textures/blend_map2.jpg");
 
   // Set camera properties

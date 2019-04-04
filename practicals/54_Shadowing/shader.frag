@@ -58,16 +58,37 @@ layout(location = 0) out vec4 colour;
 void main() {
   // *********************************
   // Calculate shade factor
-
+  float shade_factor=calculate_shadow();
   // Calculate view direction, normalize it
+  vec3 view_dir=normalize(eye_pos-position);
 
   // Sample texture
+  vec4 tex_colour=texture(tex,tex_coord);
 
   // Calculate spot light
 
+   // *********************************
+  // Calculate direction to the light
+  vec3 dir=normalize(spot.position-position);
+
+  // Calculate distance to light
+ float d=distance(spot.position,position);
+
+  // Calculate attenuation value
+  float kds=(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2)));
+  vec4 att=(1/kds)*spot.light_colour;
+
+  // Calculate spot light intensity
+  vec4 spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
+
+  // Calculate light colour
+	vec4 light_colour=spot.light_colour;
+  // *********************************
+
+
   // Scale colour by shade
-
+ light_colour= light_colour*shade_factor;
   //Ensure alpha is 1.0
-
+  light_colour.a=1.0f;
   // *********************************
 }

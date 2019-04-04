@@ -48,9 +48,9 @@ bool load_content() {
 
   // Load textures
   // 0 - no mipmaps
-  texs[0] = texture("textures/checker.png", false, false);
+  texs[0] = texture("textures/checked.gif", false, false);
   // 1 - Auto Generate mipmaps
-  texs[1] = texture("textures/checker.png", true, false);
+  texs[1] = texture("textures/checked.gif", true, false);
   // 2 - Manual Mip Levels
   texs[2] = texture({"textures/uv_32.png", "textures/uv_16.png", "textures/uv_8.png", "textures/uv_4.png",
                      "textures/uv_2.png", "textures/uv_1.png"},
