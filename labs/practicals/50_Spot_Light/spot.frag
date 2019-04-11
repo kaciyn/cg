@@ -47,14 +47,14 @@ void main() {
  float d=distance(spot.position,position);
 
   // Calculate attenuation value
-  float kds=(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2)));
-  vec4 att=(1/kds)*spot.light_colour;
+ float kds=spot.constant+(spot.linear*d)+(spot.quadratic*d*d);
+  float att=(1/kds);
 
   // Calculate spot light intensity
-  vec4 spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
+  float spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
 
   // Calculate light colour
-	vec4 light_colour=spot.light_colour;
+	vec4 light_colour=spot.light_colour*spot_intensity;
 
   // Calculate view direction
   vec3 view_dir=normalize(eye_pos-position);

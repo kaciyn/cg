@@ -61,8 +61,8 @@ void main() {
   vec3 view_dir=normalize(eye_pos-position);
 
   // Calculate normal from normal map
-
+  vec3 calculatednormal=calc_normal(normal,tangent,binormal,normal_map,tex_coord);
   // Calculate directional light
-
+   colour=calculate_direction(light,mat,calculatednormal,view_dir,tex_colour);
   // *********************************
 }

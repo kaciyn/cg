@@ -13,9 +13,22 @@ using namespace glm;
 map<string, mesh> meshes;
 effect eff;
 texture tex;
-target_camera cam;
+free_camera cam;
+double cursor_x = 0.0;
+double cursor_y = 0.0;
+// target_camera cam;
 directional_light light;
 
+bool initialise() {
+	// *********************************
+	// Set input mode - hide the cursor
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Capture initial mouse position
+
+	glfwGetCursorPos(renderer::get_window(), &cursor_x, &cursor_y);
+	// *********************************
+	return true;
+}
 bool load_content() {
   // Create plane mesh
   meshes["plane"] = mesh(geometry_builder::create_plane());
@@ -32,19 +45,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Set materials
   // Red box
@@ -84,7 +103,7 @@ bool load_content() {
   meshes["torus"].get_material().set_shininess(25.0f);
 
   // Load texture
-  tex = texture("textures/checked.gif");
+  tex = texture("textures/checker.png");
 
   // Set lighting values
   light.set_ambient_intensity(vec4(0.3f, 0.3f, 0.3f, 1.0f));
@@ -110,6 +129,61 @@ bool load_content() {
 }
 
 bool update(float delta_time) {
+
+	// The ratio of pixels to rotation - remember the fov
+	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
+	static double ratio_height =
+		(quarter_pi<float>() *
+		(static_cast<float>(renderer::get_screen_height()) / static_cast<float>(renderer::get_screen_width()))) /
+		static_cast<float>(renderer::get_screen_height());
+
+
+	double current_x;
+	double current_y;
+	// *********************************
+	// Get the current cursor position
+	glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
+
+	//glfwGetCursorPos(window, x,y);
+	// Calculate delta of cursor positions from last frame
+	double delta_x = current_x - cursor_x;
+	double delta_y = current_y - cursor_y;
+
+	// Multiply deltas by ratios - gets actual change in orientation
+	delta_x = delta_x * ratio_width;
+	delta_y = delta_y * ratio_height;
+	float speed = 10.0f;
+
+	// Rotate cameras by delta
+	// delta_y - x-axis rotation
+	// delta_x - y-axis rotation
+	cam.rotate(delta_x*speed, -delta_y * speed);
+	// Use keyboard to move the camera - WSAD
+
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		cam.move(vec3(0, 0, delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		cam.move(vec3(0, 0, -delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		cam.move(vec3(-delta_time * speed, 0, 0));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		cam.move(vec3(delta_time*speed, 0, 0));
+	}
+
+
+	// Move camera
+
+	// Update the camera
+	cam.update(delta_time);
+
+	// Update cursor pos
+	cursor_x = current_x;
+	cursor_y = current_y;
+
   if (glfwGetKey(renderer::get_window(), '1')) {
     cam.set_position(vec3(50, 10, 50));
   }
@@ -165,17 +239,23 @@ bool render() {
 
     // *********************************
     // Set fog colour to the same as the clear colour
+	vec4 fog_colour= vec4(0.5f, 0.5f, 0.5f,1.0f);
+	glUniform4fv(eff.get_uniform_location("fog_colour"), 1, value_ptr(fog_colour));
 
     // Set fog start:  5.0f
-
-    // Set fog end:  100.0f
-
-    // Set fog density: 0.04f
-
-    // Set fog type: FOG_EXP2
-
-    // *********************************
-
+	float fog_start = 5.0f;
+	glUniform1f(eff.get_uniform_location("fog_start"), 1);
+	// Set fog end:  100.0f
+	float fog_end = 100.0f;
+	glUniform1f(eff.get_uniform_location("fog_end"), 1);
+	// Set fog density: 0.04f
+	float fog_density = 0.04f;
+	glUniform1f(eff.get_uniform_location("fog_density"), 1);
+	// Set fog type: FOG_EXP2
+	int fog_type = 0;
+	glUniform1i(eff.get_uniform_location("fog_type"), 2);
+	// *********************************
+	//TODO it doesn't look riGHT
     // Render mesh
     renderer::render(m);
   }
