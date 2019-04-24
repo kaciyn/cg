@@ -82,7 +82,7 @@ bool load_content() {
 	// meshes["sword"] = mesh(geometry_builder::create_box());
 	meshes["sword"] = mesh(geometry("models/claymore.obj"));
 	meshes["sword"].get_transform().scale = vec3(0.05f);
-	meshes["sword"].get_transform().translate(vec3(-0.5f, 0.21f, 0.12f));
+	meshes["sword"].get_transform().translate(vec3(-5.0f, 3.2f, 1.8f));
 	meshes["sword"].get_transform().orientation = vec3(half_pi<float>(), pi<float>(), half_pi<float>());
 
 	// Load textures
@@ -152,12 +152,12 @@ bool load_content() {
 	spot.set_power(10.0f);
 
 	// Load in shaders
-	eff.add_shader("54_Shadowing/shader.vert", GL_VERTEX_SHADER);
-	vector<string> frag_shaders{ "54_Shadowing/shader.frag", "shaders/part_spot.frag", "shaders/part_shadow.frag" };
+	eff.add_shader("001_Coursework/shader.vert", GL_VERTEX_SHADER);
+	vector<string> frag_shaders{ "001_Coursework/shader.frag", "shaders/part_spot.frag", "shaders/part_shadow.frag" };
 	eff.add_shader(frag_shaders, GL_FRAGMENT_SHADER);
 
-	shadow_eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);
-	shadow_eff.add_shader("50_Spot_Light/spot.frag", GL_FRAGMENT_SHADER);
+	shadow_eff.add_shader("001_Coursework/spot.vert", GL_VERTEX_SHADER);
+	shadow_eff.add_shader("001_Coursework/spot.frag", GL_FRAGMENT_SHADER);
 
 	// Build effect
 	eff.build();
