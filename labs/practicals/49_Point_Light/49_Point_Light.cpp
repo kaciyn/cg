@@ -98,7 +98,7 @@ bool load_content() {
 	tex = texture("textures/checked.gif");
 	// *********************************
 	// Set lighting values, Position (-25, 10, -10)
-	light.set_position(vec3((-10.0f, 10.0f, -10.0f)));
+	light.set_position(vec3(-10.0f, 10.0f, -10.0f));
 
 	// Light colour white
 	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));

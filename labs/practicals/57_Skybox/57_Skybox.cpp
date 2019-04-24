@@ -160,8 +160,7 @@ bool render() {
 
 	// Set cubemap uniform
 	renderer::bind(cube_map, 0);
-
-
+	
 	// Render skybox
 	renderer::render(skybox);
 

@@ -243,19 +243,14 @@ bool render() {
 	glUniform4fv(eff.get_uniform_location("fog_colour"), 1, value_ptr(fog_colour));
 
     // Set fog start:  5.0f
-	float fog_start = 5.0f;
-	glUniform1f(eff.get_uniform_location("fog_start"), 1);
+	glUniform1f(eff.get_uniform_location("fog_start"), 5.0f);
 	// Set fog end:  100.0f
-	float fog_end = 100.0f;
-	glUniform1f(eff.get_uniform_location("fog_end"), 1);
+	glUniform1f(eff.get_uniform_location("fog_end"), 100.0f);
 	// Set fog density: 0.04f
-	float fog_density = 0.04f;
-	glUniform1f(eff.get_uniform_location("fog_density"), 1);
+	glUniform1f(eff.get_uniform_location("fog_density"), 0.04f);
 	// Set fog type: FOG_EXP2
-	int fog_type = 0;
 	glUniform1i(eff.get_uniform_location("fog_type"), 2);
 	// *********************************
-	//TODO it doesn't look riGHT
     // Render mesh
     renderer::render(m);
   }

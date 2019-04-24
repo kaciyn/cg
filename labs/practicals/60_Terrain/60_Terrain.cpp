@@ -261,7 +261,7 @@ bool render() {
   vec3 eye_pos(cam.get_position());
   glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(eye_pos));
   // *********************************
-   //Bind Terrian Material
+   //Bind Terrain Material
   renderer::bind(terr.get_material(), "mat");
   // Bind Light
   renderer::bind(light, "light");

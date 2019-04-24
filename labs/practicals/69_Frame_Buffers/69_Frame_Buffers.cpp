@@ -38,19 +38,25 @@ bool load_content() {
   // Transform objects
   meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+
   meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
   meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+
   meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+
   meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
   meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+
   meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
   meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+
   meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
   meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+
   meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().rotate(vec3(half_pi<float>(), 0.0f, 0.0f));
+  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
   // Set materials
   // Red box
@@ -158,12 +164,15 @@ bool update(float delta_time) {
 bool render() {
   // *********************************
   // Set render target to frame buffer
+	renderer::set_render_target(frame);
 
   // Set clear colour to white
+	renderer::setClearColour(1.0f, 1.0f, 1.0f);
 
   // Clear frame
+	glClear(GL_FRAMEBUFFER_BARRIER_BIT);
 
-  // *********************************
+	// *********************************
   // Render meshes
   for (auto &e : meshes) {
     auto m = e.second;
@@ -203,23 +212,32 @@ bool render() {
   renderer::setClearColour(0.0f, 1.0f, 1.0f);
   // *********************************
   // Set render target back to the screen
+  renderer::set_render_target();
 
   // bind the tex effect
+  renderer::bind(tex_eff);
 
   // Get M from render_cube
+  auto M = render_cube.get_transform().get_transform_matrix();
 
   // get V and P from Cam 2
-
+  auto V = cam2.get_view();
+  auto P = cam2.get_projection();
 
   // Build MVP
+  auto MVP = P * V * M;
 
   // Set MVP matrix uniform
-
+  glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+  //TODO it's not letting me set the uniform here
   // Bind texture from frame buffer
+  renderer::bind(frame.get_frame(), 0);
 
   // Set the tex uniform
+  glUniform1i(eff.get_uniform_location("tex"), 0);
 
   // Render the render cube
+  renderer::render(render_cube);
 
   // *********************************
   return true;

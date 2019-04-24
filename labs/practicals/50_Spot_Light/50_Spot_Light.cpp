@@ -107,9 +107,7 @@ bool load_content() {
   // *********************************
   // Set lighting values
   // Position (-25, 10, -10)
-  light.set_position(vec3((-25.0f, 10.0f, -10.0f)));
-  //light.set_position(vec3((0.0f,0.0f,0.0f)));
-
+  light.set_position(vec3(-25.0f, 5.0f, -10.0f));
 
   // Light colour white
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));

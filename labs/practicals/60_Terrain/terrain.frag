@@ -59,6 +59,9 @@ void main() {
   // Calculate primary colour component
   vec4 primary = mat.emissive + ambient + diffuse;
   // Calculate final colour
-  colour = primary * tex_colour + specular;
+//  colour = primary * tex_colour + specular;
+ // colour = primary + specular;
+// colour = specular;
+colour=vec4(1.0,0.9,1.0,1.0);
   colour.a = 1.0;
 }

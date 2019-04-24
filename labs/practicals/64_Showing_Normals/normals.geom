@@ -16,21 +16,23 @@ void main() {
   for (int i = 0; i < 3; ++i) {
     // *********************************
     // Get vertex pos
-
+	gl_Position;
     // Ensure normal is normalized
-
 
     // Output normal position for start of line
     // - remember to transform
 
     // Emit
+  EndPrimitive();
 
     // Output position + normal for end of line
     // - remember to transform
 
     // Emit
+    EmitVertex();
 
     // End the primitive
+  EndPrimitive();
 
     // *********************************
   }

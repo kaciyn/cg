@@ -47,11 +47,14 @@ bool update(float delta_time) {
   }
   // *********************************
   // Use o and p to modify explode factor =/- 0.1f
-
-
-
-
-
+  
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
+	  explode_factor -= 0.1f;
+  }
+  if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
+	  explode_factor += 0.1f;
+  }
+  
 
   // *********************************
   cam.update(delta_time);
@@ -72,12 +75,13 @@ bool render() {
   glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
   // *********************************
   // Set explode factor uniform
+  glUniform1f(eff.get_uniform_location("explode_factor"), explode_factor);
 
   // *********************************
   // Render mesh
-  //glDisable(GL_CULL_FACE); //turn this on to see cool stuff.
+  glDisable(GL_CULL_FACE); //turn this on to see cool stuff.
   renderer::render(sphere);
-
+  //todo shit's not rendering
   return true;
 }
 

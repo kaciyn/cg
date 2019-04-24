@@ -84,11 +84,38 @@ void main() {
   // Calculate light colour
 	vec4 light_colour=spot.light_colour;
   // *********************************
+     // Calculate k
+  float k = max(dot(normal, dir), 0.0);
 
+  // Calculate diffuse
+  vec4 diffuse = k * (mat.diffuse_reflection * light_colour);
+
+  // Calculate half vector
+  vec3 half_vector=normalize(dir+view_dir);
+
+  // Calculate specular component
+  float n_h=dot(normal,half_vector);
+  float max_n_h=max(n_h,0.0f);
+  float specular_intensity=pow(max_n_h,mat.shininess);
+  vec4 specular=specular_intensity*mat.specular_reflection*light_colour;
+
+  // Calculate primary colour component
+  vec4 primary=mat.emissive+diffuse;
+
+  // Calculate final colour - remember alpha
+  vec4 secondary=specular;
+
+  //set alphas
+  primary.a = 1.0f;
+  secondary.a = 1.0f;
+  light_colour.a=1.0f;
+
+  //calculate colour
+   colour=primary*tex_colour+secondary;
 
   // Scale colour by shade
- light_colour= light_colour*shade_factor;
+ colour= colour*shade_factor;
   //Ensure alpha is 1.0
-  light_colour.a=1.0f;
+  colour.a=1.0f;
   // *********************************
 }
