@@ -58,7 +58,6 @@ void main() {
   float max_n_h=max(n_h,0.0f);
   float specular_intensity=pow(max_n_h,mat.shininess);
   vec4 specular=specular_intensity*mat.specular_reflection*light.light_colour;
-  //vec4 specular=pow(max(dot(normal,half_vector),0.0f),mat.shininess)*(mat.specular_reflection*light.light_colour);
   
   // Sample texture
   vec4 tex_colour=texture(tex,tex_coord);

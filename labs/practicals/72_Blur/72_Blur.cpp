@@ -18,88 +18,105 @@ bool load_content() {
   // *********************************
   // Create frame buffer - use screen width and height
 	frame = frame_buffer(renderer::get_screen_width(), renderer::get_screen_height());
+
 	// Create screen quad
 	vector<vec3> positions{ vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
-						   vec3(1.0f, 1.0f, 0.0f) };
+						vec3(1.0f, 1.0f, 0.0f) };
 	vector<vec2> tex_coords{ vec2(0.0, 0.0), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f, 1.0f) };
 
   // *********************************
 
   // Create plane mesh
-  meshes["plane"] = mesh(geometry_builder::create_plane());
+	meshes["plane"] = mesh(geometry_builder::create_plane());
 
-  // Create scene
-  meshes["box"] = mesh(geometry_builder::create_box());
-  meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());
-  meshes["pyramid"] = mesh(geometry_builder::create_pyramid());
-  meshes["disk"] = mesh(geometry_builder::create_disk(20));
-  meshes["cylinder"] = mesh(geometry_builder::create_cylinder(20, 20));
-  meshes["sphere"] = mesh(geometry_builder::create_sphere(20, 20));
-  meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
+	// Create scene
+	meshes["box"] = mesh(geometry_builder::create_box());
+	meshes["tetra"] = mesh(geometry_builder::create_tetrahedron());
+	meshes["pyramid"] = mesh(geometry_builder::create_pyramid());
+	meshes["disk"] = mesh(geometry_builder::create_disk(20));
+	meshes["cylinder"] = mesh(geometry_builder::create_cylinder(20, 20));
+	meshes["sphere"] = mesh(geometry_builder::create_sphere(20, 20));
+	meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
 
-  // Transform objects
-  meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
+	// Transform objects
+	meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
 
-  meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
-  meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
+	meshes["tetra"].get_transform().scale = vec3(4.0f, 4.0f, 4.0f);
+	meshes["tetra"].get_transform().translate(vec3(-30.0f, 10.0f, -10.0f));
 
-  meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
+	meshes["pyramid"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["pyramid"].get_transform().translate(vec3(-10.0f, 7.5f, -30.0f));
 
-  meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
-  meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
-  meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+	meshes["disk"].get_transform().scale = vec3(3.0f, 1.0f, 3.0f);
+	meshes["disk"].get_transform().translate(vec3(-10.0f, 11.5f, -30.0f));
+	meshes["disk"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
-  meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
-  meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
+	meshes["cylinder"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
+	meshes["cylinder"].get_transform().translate(vec3(-25.0f, 2.5f, -25.0f));
 
-  meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
-  meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+	meshes["sphere"].get_transform().scale = vec3(2.5f, 2.5f, 2.5f);
+	meshes["sphere"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
 
-  meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
-  meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
+	meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
+	meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
 
-  // Set materials
-  // Red box
-  meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["box"].get_material().set_diffuse(vec4(1.0f, 0.0f, 0.0f, 1.0f));
-  meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["box"].get_material().set_shininess(25.0f);
-  // Green tetra
-  meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
-  meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["tetra"].get_material().set_shininess(25.0f);
-  // Blue pyramid
-  meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
-  meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["pyramid"].get_material().set_shininess(25.0f);
-  // Yellow disk
-  meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
-  meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["disk"].get_material().set_shininess(25.0f);
-  // Magenta cylinder
-  meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
-  meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["cylinder"].get_material().set_shininess(25.0f);
-  // Cyan sphere
-  meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
-  meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["sphere"].get_material().set_shininess(25.0f);
-  // White torus
-  meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
-  meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  meshes["torus"].get_material().set_shininess(25.0f);
 
-  // Load texture
-  tex = texture("textures/checked.gif");
 
+	// *********************************
+	// Set materials
+	// - all emissive is black
+	// - all specular is white
+	// - all shininess is 25
+
+	// Red box
+	meshes["box"].get_material().set_diffuse(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["box"].get_material().set_shininess(25.0f);
+
+	//// Green tetra
+	meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["tetra"].get_material().set_shininess(25.0f);
+
+
+	//// Blue pyramid
+	meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_shininess(25.0f);
+
+	//// Yellow disk
+	meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["disk"].get_material().set_shininess(25.0f);
+
+	//// Magenta cylinder
+	meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_shininess(25.0f);
+
+
+	//// Cyan sphere
+	meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_shininess(25.0f);
+
+	// White torus
+	meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
+	meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_shininess(25.0f);
+
+
+	// *********************************
+	// Load texture
+	tex = texture("textures/checked.gif");
   // Set lighting values
   light.set_ambient_intensity(vec4(0.3f, 0.3f, 0.3f, 1.0f));
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -201,25 +218,24 @@ bool render() {
   mat4 MVP(1.0f);
 
   // Set MVP matrix uniform
-  glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-  //TODO same issue as 69
- // Bind texture from frame buffer
+  glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+
+	// Bind texture from frame buffer
   renderer::bind(frame.get_depth(), 0);
 
   // Set the tex uniform
-  glUniform1i(eff.get_uniform_location("tex"), 0);
+  glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 
   // Set inverse width Uniform
-
-  glUniform1f(eff.get_uniform_location("inverse_width"), 1.0f/ renderer::get_screen_width());
+  glUniform1f(tex_eff.get_uniform_location("inverse_width"), 1.0f/ renderer::get_screen_width());
 
 
   // Set inverse height Uniform
-  glUniform1f(eff.get_uniform_location("inverse_height"), 1.0f / renderer::get_screen_height());
+  glUniform1f(tex_eff.get_uniform_location("inverse_height"), 1.0f / renderer::get_screen_height());
 
   // Render the screen quad
   renderer::render(screen_quad);
-
+  //TODO crashes on load geom thing????
   // *********************************
 
   return true;

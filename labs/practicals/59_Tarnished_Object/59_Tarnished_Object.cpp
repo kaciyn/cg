@@ -31,8 +31,8 @@ bool load_content() {
 	tarnish = texture("textures/tarnish.jpg");
   
 	// Load in environment map shader
-	eff.add_shader("58_Environment_Maps/env_map.vert", GL_VERTEX_SHADER);
-	eff.add_shader("58_Environment_Maps/env_map.frag", GL_FRAGMENT_SHADER);
+	eff.add_shader("59_Tarnished_Object/tarnish.vert", GL_VERTEX_SHADER);
+	eff.add_shader("59_Tarnished_Object/tarnish.frag", GL_FRAGMENT_SHADER);
 
   // Build effect
 	eff.build();
@@ -80,14 +80,13 @@ bool render() {
 	auto MVP = P * V * M;
 
 	// Set MVP matrix uniform
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(sky_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind cubemap to TU 0
 	renderer::bind(cube_map, 0);
 
 	// Set cubemap uniform
-	glUniform1i(eff.get_uniform_location("cubemap"), 0);
-	//TODO this doesnt work why 
+	glUniform1i(sky_eff.get_uniform_location("cubemap"), 0);
 
 	// Render skybox
 	renderer::render(skybox);

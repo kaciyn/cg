@@ -10,8 +10,21 @@ mesh skybox;
 effect eff;
 effect sky_eff;
 cubemap cube_map;
-target_camera cam;
+free_camera cam;
+double cursor_x = 0.0;
+double cursor_y = 0.0;
+GLFWwindow* window;
 
+bool initialise() {
+	// *********************************
+	// Set input mode - hide the cursor
+	glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Capture initial mouse position
+
+	glfwGetCursorPos(renderer::get_window(), &cursor_x, &cursor_y);
+	// *********************************
+	return true;
+}
 bool load_content() {
 	// Create a sphere
 	sphere = mesh(geometry_builder::create_sphere(25, 25));
@@ -40,20 +53,76 @@ bool load_content() {
 	sky_eff.build();
 
 	// Set camera properties
-	cam.set_position(vec3(0.0f, 0.0f, 10.0f));
+	cam.set_position(vec3(0.0f, 10.0f, 0.0f));
 	cam.set_target(vec3(0.0f, 0.0f, 0.0f));
 	cam.set_projection(quarter_pi<float>(), renderer::get_screen_aspect(), 0.1f, 1000.0f);
+
+	skybox.get_transform().position = cam.get_position();
+
 	return true;
 }
 
+float theta;
 bool update(float delta_time) {
-	cam.update(delta_time);
+	theta += pi<float>() * delta_time;
+	// The ratio of pixels to rotation - remember the fov
+	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
+	static double ratio_height =
+		(quarter_pi<float>() *
+		(static_cast<float>(renderer::get_screen_height()) / static_cast<float>(renderer::get_screen_width()))) /
+		static_cast<float>(renderer::get_screen_height());
+
+
+	double current_x;
+	double current_y;
 	// *********************************
-	// Set skybox position to camera position (camera in centre of skybox)
-	skybox.get_transform().position = cam.get_position();
+	// Get the current cursor position
+	glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
+
+	//glfwGetCursorPos(window, x,y);
+	// Calculate delta of cursor positions from last frame
+	double delta_x = current_x - cursor_x;
+	double delta_y = current_y - cursor_y;
+
+	// Multiply deltas by ratios - gets actual change in orientation
+	delta_x = delta_x * ratio_width;
+	delta_y = delta_y * ratio_height;
+
+	// Rotate cameras by delta
+	// delta_y - x-axis rotation
+	// delta_x - y-axis rotation
+	float speed = 10.0f;
+
+	cam.rotate(delta_x*speed, -delta_y * speed);
+	// Use keyboard to move the camera - WSAD
+
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		cam.move(vec3(0, 0, delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		cam.move(vec3(0, 0, -delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		cam.move(vec3(-delta_time * speed, 0, 0));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		cam.move(vec3(delta_time*speed, 0, 0));
+	}
+
+
+	// Move camera
+
+	// Update the camera
+	cam.update(delta_time);
+
+	// Update cursor pos
+	cursor_x = current_x;
+	cursor_y = current_y;
 
 	// rotate the sphere
 	sphere.get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
+	// *********************************
 	// *********************************
 	return true;
 }
@@ -75,15 +144,14 @@ bool render() {
 	auto MVP = P * V * M;
 
 	// Set MVP matrix uniform
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(sky_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 	//TODO this throws a debug error  
 
 	// Bind cubemap to TU 0
 	renderer::bind(cube_map, 0);
 
 	// Set cubemap uniform
-	glUniform1i(eff.get_uniform_location("cubemap"), 0);
-	//TODO this doesn't work  
+	glUniform1i(sky_eff.get_uniform_location("cubemap"), 0);
 
 	// Render skybox
 	renderer::render(skybox);

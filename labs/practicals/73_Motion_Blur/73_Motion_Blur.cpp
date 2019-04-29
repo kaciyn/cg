@@ -282,8 +282,7 @@ bool render() {
 	mat4 MVP(1.0f);
 
 	// Set MVP matrix uniform
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-	//TODO same issue as 69
+	glUniformMatrix4fv(motion_blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind tempframe to TU 0.
 	renderer::bind(temp_frame.get_depth(), 0);
@@ -293,12 +292,12 @@ bool render() {
 
 
 	// Set tex uniforms
-	glUniform1i(eff.get_uniform_location("tex"), 0);
-	glUniform1i(eff.get_uniform_location("previous_frame"), 1);
+	glUniform1i(motion_blur.get_uniform_location("tex"), 0);
+	glUniform1i(motion_blur.get_uniform_location("previous_frame"), 1);
 
 
 	// Set blend factor (0.9f)
-	glUniform1f(eff.get_uniform_location("blend_factor"), 0.9f);
+	glUniform1f(motion_blur.get_uniform_location("blend_factor"), 0.9f);
 
 	// Render screen quad
 	renderer::render(screen_quad);
@@ -311,13 +310,13 @@ bool render() {
 
 
 	// Set MVP matrix uniform
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(motion_blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind texture from frame buffer
 	renderer::bind(frames[current_frame].get_depth(), 0);
 
 	// Set the uniform
-	glUniform1i(eff.get_uniform_location("tex"), 0);
+	glUniform1i(motion_blur.get_uniform_location("tex"), 0);
 
 	// Render the screen quad
 	renderer::render(screen_quad);

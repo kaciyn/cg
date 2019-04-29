@@ -206,13 +206,13 @@ bool render() {
   mat4 MVP(1.0f);
 
   // Set MVP matrix uniform
-  glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-  //TODO same issue as 69
- // Bind texture from frame buffer
+  glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+
+	// Bind texture from frame buffer
   renderer::bind(frame.get_depth(), 0);
 
   // Set the tex uniform
-  glUniform1i(eff.get_uniform_location("tex"), 0);
+  glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 
   // Render the screen quad
   renderer::render(screen_quad);

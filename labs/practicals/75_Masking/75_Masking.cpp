@@ -212,18 +212,18 @@ bool render() {
 
 	// MVP is now the identity matrix
 	mat4 MVP(1.0f);
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 	// Bind texture from frame buffer to TU 0
 	renderer::bind(frame.get_frame(), 0);
 
 	// Set the tex uniform, 0
-	glUniform1i(eff.get_uniform_location("tex"), 0);
+	glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 
 	// Bind alpha texture to TU, 1
 	renderer::bind(alpha_map, 1);
 
 	// Set the tex uniform, 1
-	glUniform1i(eff.get_uniform_location("tex"), 0);
+	glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 
 	// Render the screen quad
 	renderer::render(screen_quad);

@@ -282,18 +282,18 @@ bool render() {
 		mat4 MVP(1.0f);
 
 		// Set MVP matrix uniform
-		glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-		//TODO same issue as 69
-		  // Bind frames
+		glUniformMatrix4fv(blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+
+		// Bind frames
 		renderer::bind(temp_frames[(i + 1) % 2].get_depth(), 1);
 
 
 		// Set inverse width
-		glUniform1f(eff.get_uniform_location("inverse_width"), 1.0f / renderer::get_screen_width());
+		glUniform1f(blur.get_uniform_location("inverse_width"), 1.0f / renderer::get_screen_width());
 
 
 		// Set inverse height 
-		glUniform1f(eff.get_uniform_location("inverse_height"), 1.0f / renderer::get_screen_height());
+		glUniform1f(blur.get_uniform_location("inverse_height"), 1.0f / renderer::get_screen_height());
 
 		// Render screen quad
 		renderer::render(screen_quad);
@@ -313,34 +313,34 @@ bool render() {
 
 	// Set MVP matrix uniform, identity
 	mat4 MVP(1.0f);
-	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	glUniformMatrix4fv(dof.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind texture from last pass, 0
 	renderer::bind(last_pass.get_depth(), 0);
 
 	// Set the uniform, 0
-	glUniform1i(eff.get_uniform_location("tex"), 0);
+	glUniform1i(dof.get_uniform_location("tex"), 0);
 
 	// Sharp texture is taken from first pass
 	// bind first pass, 1
 	renderer::bind(first_pass.get_frame(), 1);
-	//TODO SHOULD I HAVE BEEN BINDING THE FRAME THIS ENTIRE TIME AAAAAAAA
+
 	//set sharp tex uniform, 1
-	glUniform1i(eff.get_uniform_location("sharp"), 1);
+	glUniform1i(dof.get_uniform_location("sharp"), 1);
 
 	// Depth also taken from first pass
 	// bind first pass **depth** to  TU 2
 	renderer::bind(first_pass.get_depth(), 2);
 
 	//set depth tex uniform, 2
-	glUniform1i(eff.get_uniform_location("depth"), 2);
+	glUniform1i(dof.get_uniform_location("depth"), 2);
 
 	// Set range and focus values
 	// - range distance to chaser (get from camera)
 	// - focus 0.3
 	float distance = sqrtf(dot(vec3(0, 0, 0), cam.get_pos_offset()));
-	glUniform1f(eff.get_uniform_location("range"), distance);
-	glUniform1f(eff.get_uniform_location("focus"), 0.3f);
+	glUniform1f(dof.get_uniform_location("range"), distance);
+	glUniform1f(dof.get_uniform_location("focus"), 0.3f);
 
 
 	// Render the screen quad
