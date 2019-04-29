@@ -9,24 +9,28 @@ map<string, mesh> meshes;
 effect eff;
 effect tex_eff;
 texture tex;
-target_camera cam;
+free_camera cam;
 directional_light light;
 frame_buffer frame;
 geometry screen_quad;
-
+double cursor_x = 0.0;
+double cursor_y = 0.0;
+GLFWwindow* window;
 bool load_content() {
-  // *********************************
-  // Create frame buffer - use screen width and height
+	// *********************************
+	// Create frame buffer - use screen width and height
 	frame = frame_buffer(renderer::get_screen_width(), renderer::get_screen_height());
 
 	// Create screen quad
 	vector<vec3> positions{ vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
 						vec3(1.0f, 1.0f, 0.0f) };
 	vector<vec2> tex_coords{ vec2(0.0, 0.0), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f, 1.0f) };
+	screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+	screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+	screen_quad.set_type(GL_TRIANGLE_STRIP);
+	// *********************************
 
-  // *********************************
-
-  // Create plane mesh
+	// Create plane mesh
 	meshes["plane"] = mesh(geometry_builder::create_plane());
 
 	// Create scene
@@ -60,8 +64,7 @@ bool load_content() {
 
 	meshes["torus"].get_transform().translate(vec3(-25.0f, 10.0f, -25.0f));
 	meshes["torus"].get_transform().orientation = vec3(half_pi<float>(), 0.0f, 0.0f);
-
-
+	
 
 	// *********************************
 	// Set materials
@@ -117,137 +120,173 @@ bool load_content() {
 	// *********************************
 	// Load texture
 	tex = texture("textures/checked.gif");
-  // Set lighting values
-  light.set_ambient_intensity(vec4(0.3f, 0.3f, 0.3f, 1.0f));
-  light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-  light.set_direction(vec3(1.0f, 1.0f, -1.0f));
+	// Set lighting values
+	light.set_ambient_intensity(vec4(0.3f, 0.3f, 0.3f, 1.0f));
+	light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	light.set_direction(vec3(1.0f, 1.0f, -1.0f));
 
-  // Load in shaders
-  eff.add_shader("48_Phong_Shading/phong.vert", GL_VERTEX_SHADER);
-  eff.add_shader("48_Phong_Shading/phong.frag", GL_FRAGMENT_SHADER);
-  tex_eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
-  tex_eff.add_shader("72_Blur/blur.frag", GL_FRAGMENT_SHADER);
-  // Build effects
-  eff.build();
-  tex_eff.build();
+	// Load in shaders
+	eff.add_shader("48_Phong_Shading/phong.vert", GL_VERTEX_SHADER);
+	eff.add_shader("48_Phong_Shading/phong.frag", GL_FRAGMENT_SHADER);
+	tex_eff.add_shader("27_Texturing_Shader/simple_texture.vert", GL_VERTEX_SHADER);
+	tex_eff.add_shader("72_Blur/blur.frag", GL_FRAGMENT_SHADER);
+	// Build effects
+	eff.build();
+	tex_eff.build();
 
-  // Set camera properties
-  cam.set_position(vec3(50.0f, 10.0f, 50.0f));
-  cam.set_target(vec3(0.0f, 0.0f, 0.0f));
-  auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
-  cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
+	// Set camera properties
+	cam.set_position(vec3(50.0f, 10.0f, 50.0f));
+	cam.set_target(vec3(0.0f, 0.0f, 0.0f));
+	auto aspect = static_cast<float>(renderer::get_screen_width()) / static_cast<float>(renderer::get_screen_height());
+	cam.set_projection(quarter_pi<float>(), aspect, 2.414f, 1000.0f);
 
-  return true;
+	return true;
 }
 
 bool update(float delta_time) {
-  if (glfwGetKey(renderer::get_window(), '1')) {
-    cam.set_position(vec3(50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '2')) {
-    cam.set_position(vec3(-50, 10, 50));
-  }
-  if (glfwGetKey(renderer::get_window(), '3')) {
-    cam.set_position(vec3(-50, 10, -50));
-  }
-  if (glfwGetKey(renderer::get_window(), '4')) {
-    cam.set_position(vec3(50, 10, -50));
-  }
 
-  // Rotate the sphere
-  meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
+	float speed = 10.0f;
 
-  cam.update(delta_time);
+	double current_x;
+	double current_y;
 
-  return true;
+	static const float screenHeight = static_cast<float>(renderer::get_screen_height());
+	static const float screenWidth = static_cast<float>(renderer::get_screen_height());
+
+	static const double ratio_width = quarter_pi<float>() / screenWidth;
+	static const double ratio_height = (quarter_pi<float>() * (screenHeight / screenWidth)) / screenHeight;
+
+	// Get the current cursor position
+	glfwGetCursorPos(renderer::get_window(), &current_x, &current_y);
+
+	// Calculate delta of cursor positions from last frame
+	double delta_x = current_x - cursor_x;
+	double delta_y = current_y - cursor_y;
+
+	// Multiply deltas by ratios - gets actual change in orientation
+	delta_x = delta_x * ratio_width;
+	delta_y = delta_y * ratio_height;
+
+	// Rotate the sphere
+	meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
+
+	//free camera 
+
+		// Rotate cameras by delta
+		// delta_y - x-axis rotation
+		// delta_x - y-axis rotation
+	cam.rotate(delta_x, -delta_y);
+	// Use keyboard to move the camera - WSAD
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_W)) {
+		cam.move(vec3(0, 0, delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_S)) {
+		cam.move(vec3(0, 0, -delta_time * speed));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_A)) {
+		cam.move(vec3(-delta_time * speed, 0, 0));
+	}
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_D)) {
+		cam.move(vec3(delta_time*speed, 0, 0));
+	}
+
+	// Update the cameras
+	cam.update(delta_time);
+
+	// Update cursor pos
+	cursor_x = current_x;
+	cursor_y = current_y;
+
+	return true;
 }
 
 bool render() {
-  // *********************************
-  // Set render target to frame buffer
+	// *********************************
+	// Set render target to frame buffer
 	renderer::set_render_target(frame);
 
 	// Clear frame
 	glClear(GL_FRAMEBUFFER_BARRIER_BIT);
 
-  // *********************************
+	// *********************************
 
-  // Render meshes
-  for (auto &e : meshes) {
-    auto m = e.second;
-    // Bind effect
-    renderer::bind(eff);
-    // Create MVP matrix
-    auto M = m.get_transform().get_transform_matrix();
-    auto V = cam.get_view();
-    auto P = cam.get_projection();
-    auto MVP = P * V * M;
-    // Set MVP matrix uniform
-    glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-    // Create MV matrix
-    auto MV = V * M;
-    // Set MV matrix uniform
-    glUniformMatrix4fv(eff.get_uniform_location("MV"), 1, GL_FALSE, value_ptr(MV));
-    // Set M matrix uniform
-    glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
-    // Set N matrix uniform
-    glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(m.get_transform().get_normal_matrix()));
-    // Bind material
-    renderer::bind(m.get_material(), "mat");
-    // Bind light
-    renderer::bind(light, "light");
-    // Bind texture
-    renderer::bind(tex, 0);
-    // Set tex uniform
-    glUniform1i(eff.get_uniform_location("tex"), 0);
-    // Set eye position
-    glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(cam.get_position()));
+	// Render meshes
+	for (auto &e : meshes) {
+		auto m = e.second;
+		// Bind effect
+		renderer::bind(eff);
+		// Create MVP matrix
+		auto M = m.get_transform().get_transform_matrix();
+		auto V = cam.get_view();
+		auto P = cam.get_projection();
+		auto MVP = P * V * M;
+		// Set MVP matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+		// Create MV matrix
+		auto MV = V * M;
+		// Set MV matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("MV"), 1, GL_FALSE, value_ptr(MV));
+		// Set M matrix uniform
+		glUniformMatrix4fv(eff.get_uniform_location("M"), 1, GL_FALSE, value_ptr(M));
+		// Set N matrix uniform
+		glUniformMatrix3fv(eff.get_uniform_location("N"), 1, GL_FALSE, value_ptr(m.get_transform().get_normal_matrix()));
+		// Bind material
+		renderer::bind(m.get_material(), "mat");
+		// Bind light
+		renderer::bind(light, "light");
+		// Bind texture
+		renderer::bind(tex, 0);
+		// Set tex uniform
+		glUniform1i(eff.get_uniform_location("tex"), 0);
+		// Set eye position
+		glUniform3fv(eff.get_uniform_location("eye_pos"), 1, value_ptr(cam.get_position()));
 
-    // Render mesh
-    renderer::render(m);
-  }
+		// Render mesh
+		renderer::render(m);
+	}
 
-  // *********************************
-  // Set render target back to the screen
-  renderer::set_render_target();
+	// *********************************
+	// Set render target back to the screen
+	renderer::set_render_target();
 
-  // bind the tex effect
-  renderer::bind(tex_eff);
+	// bind the tex effect
+	renderer::bind(tex_eff);
 
-  // MVP is now the identity matrix
-  mat4 MVP(1.0f);
+	// MVP is now the identity matrix
+	mat4 MVP(1.0f);
 
-  // Set MVP matrix uniform
-  glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
+	// Set MVP matrix uniform
+	glUniformMatrix4fv(tex_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind texture from frame buffer
-  renderer::bind(frame.get_depth(), 0);
+	renderer::bind(frame.get_frame(), 0);
 
-  // Set the tex uniform
-  glUniform1i(tex_eff.get_uniform_location("tex"), 0);
+	// Set the tex uniform
+	glUniform1i(tex_eff.get_uniform_location("tex"), 0);
 
-  // Set inverse width Uniform
-  glUniform1f(tex_eff.get_uniform_location("inverse_width"), 1.0f/ renderer::get_screen_width());
+	// Set inverse width Uniform
+	float inverse_width = 1.0f / renderer::get_screen_width();
+	glUniform1f(tex_eff.get_uniform_location("inverse_width"), inverse_width);
 
+	// Set inverse height Uniform
+	float inverse_height = 1.0f / renderer::get_screen_height();
+	glUniform1f(tex_eff.get_uniform_location("inverse_height"), inverse_height);
 
-  // Set inverse height Uniform
-  glUniform1f(tex_eff.get_uniform_location("inverse_height"), 1.0f / renderer::get_screen_height());
+	// Render the screen quad
+	renderer::render(screen_quad);
+	// *********************************
 
-  // Render the screen quad
-  renderer::render(screen_quad);
-  //TODO crashes on load geom thing????
-  // *********************************
-
-  return true;
+	return true;
 }
 
 void main() {
-  // Create application
-  app application("72_Blur");
-  // Set load content, update and render methods
-  application.set_load_content(load_content);
-  application.set_update(update);
-  application.set_render(render);
-  // Run application
-  application.run();
+	// Create application
+	app application("72_Blur");
+	// Set load content, update and render methods
+	application.set_load_content(load_content);
+	application.set_update(update);
+	application.set_render(render);
+	// Run application
+	application.run();
 }

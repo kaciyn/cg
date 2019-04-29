@@ -30,8 +30,7 @@ void main() {
   float cam_distance=blur_tex_colour.x;
   //this might extremely not be correct
   
-
-  // Mix samples together based on distance
+   // Mix samples together based on distance
   colour=texture(tex,tex_coord)*clamp(range*abs(focus-cam_distance),0.0,1.0);
 
   // Ensure alpha is 1.0

@@ -285,7 +285,7 @@ bool render() {
 		glUniformMatrix4fv(blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 		// Bind frames
-		renderer::bind(temp_frames[(i + 1) % 2].get_depth(), 1);
+		renderer::bind(temp_frames[(i + 1) % 2].get_frame(), 1);
 
 
 		// Set inverse width
@@ -316,7 +316,7 @@ bool render() {
 	glUniformMatrix4fv(dof.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind texture from last pass, 0
-	renderer::bind(last_pass.get_depth(), 0);
+	renderer::bind(last_pass.get_frame(), 0);
 
 	// Set the uniform, 0
 	glUniform1i(dof.get_uniform_location("tex"), 0);

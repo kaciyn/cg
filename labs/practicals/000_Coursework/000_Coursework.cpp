@@ -12,10 +12,13 @@ using namespace glm;
 map<string, mesh> meshes;
 map<string, texture> textures;
 effect eff;
+effect shadow_eff;
 
 target_camera targetcam;
 free_camera freecam;
 chase_camera chasecam;
+
+shadow_map shadow;
 
 // directional_light light;
 vector<point_light> points(4);
@@ -38,6 +41,8 @@ bool initialise() {
 }
 
 bool load_content() {
+	shadow = shadow_map(renderer::get_screen_width(), renderer::get_screen_height());
+
 	// Create plane mesh
 	meshes["plane"] = mesh(geometry_builder::create_plane());
 
@@ -97,52 +102,50 @@ bool load_content() {
 	textures["sword"] = texture("textures/sword.jpg");
 	textures["chaser"] = texture("textures/black.jpg");
 
-	//for some reason the diffuse nor the specular lighting has been happening so i've set the emissive so nonzero so the textures aren't all Black
+	
 	//Set mesh materials
-	meshes["plane"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["plane"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	meshes["plane"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["plane"].get_material().set_shininess(0.0f);
-
-	meshes["box"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
-	meshes["box"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	meshes["box"].get_material().set_diffuse(vec4(1.0f, 0.0f, 0.0f, 1.0f));
+	meshes["box"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["box"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["box"].get_material().set_shininess(5.0f);
+	meshes["box"].get_material().set_shininess(25.0f);
 
-	meshes["tetra"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	meshes["tetra"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
+	meshes["tetra"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["tetra"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["tetra"].get_material().set_shininess(13.0f);
+	meshes["tetra"].get_material().set_shininess(25.0f);
 
-	meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
-	meshes["pyramid"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+
+	meshes["pyramid"].get_material().set_diffuse(vec4(0.0f, 0.0f, 1.0f, 1.0f));
+	meshes["pyramid"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["pyramid"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["pyramid"].get_material().set_shininess(10.0f);
+	meshes["pyramid"].get_material().set_shininess(25.0f);
 
-	meshes["disk"].get_material().set_diffuse(vec4(0.0f, 1.0f, 0.0f, 1.0f));
-	meshes["disk"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	meshes["disk"].get_material().set_diffuse(vec4(1.0f, 1.0f, 0.0f, 1.0f));
+	meshes["disk"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["disk"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["disk"].get_material().set_shininess(5.0f);
+	meshes["disk"].get_material().set_shininess(25.0f);
 
-	meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["cylinder"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	meshes["cylinder"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
+	meshes["cylinder"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["cylinder"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["cylinder"].get_material().set_shininess(15.0f);
+	meshes["cylinder"].get_material().set_shininess(25.0f);
 
-	meshes["sphere"].get_material().set_diffuse(vec4(1.0f, 0.0f, 1.0f, 1.0f));
-	meshes["sphere"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+
+	meshes["sphere"].get_material().set_diffuse(vec4(0.0f, 1.0f, 1.0f, 1.0f));
+	meshes["sphere"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["sphere"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["sphere"].get_material().set_shininess(10.0f);
+	meshes["sphere"].get_material().set_shininess(25.0f);
 
-	meshes["torus"].get_material().set_diffuse(vec4(0.5f, 1.0f, 0.0f, 1.0f));
-	meshes["torus"].get_material().set_emissive(vec4(0.5f, 0.5f, 0.5f, 1.0f));
+	meshes["torus"].get_material().set_diffuse(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	meshes["torus"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["torus"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	meshes["torus"].get_material().set_shininess(0.0f);
-
-	meshes["sword"].get_material().set_emissive(vec4(0.5f, 0.8f, 0.0f, 1.0f));
+	meshes["torus"].get_material().set_shininess(25.0f);
+	
+	meshes["sword"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["sword"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	meshes["sword"].get_material().set_shininess(10.0f);
 
-	meshes["chaser"].get_material().set_emissive(vec4(0.6f, 0.6f, 0.5f, 1.0f));
+	meshes["chaser"].get_material().set_emissive(vec4(0.0f, 0.0f, 0.0f, 1.0f));
 	meshes["chaser"].get_material().set_specular(vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	meshes["chaser"].get_material().set_shininess(25.0f);
 
@@ -220,6 +223,10 @@ bool load_content() {
 	// Load in shaders
 	eff.add_shader("000_Coursework/texture.vert", GL_VERTEX_SHADER);
 	eff.add_shader("000_Coursework/texture.frag", GL_FRAGMENT_SHADER);
+
+
+	shadow_eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);
+	shadow_eff.add_shader("50_Spot_Light/spot.frag", GL_FRAGMENT_SHADER);
 
 	// Build effect
 	eff.build();

@@ -18,6 +18,7 @@ geometry screen_quad;
 chase_camera cam;
 double cursor_x = 0.0;
 double cursor_y = 0.0;
+GLFWwindow* window;
 
 bool initialise() {
 	// Set input mode - hide the cursor
@@ -159,7 +160,7 @@ bool load_content() {
 
 bool update(float delta_time) {
 	// Flip frame
-	current_frame = (current_frame + 1) % 2;
+	// current_frame = (current_frame + 1) % 2;
 
 	// The target object
 	static mesh &target_mesh = meshes["chaser"];
@@ -208,7 +209,7 @@ bool update(float delta_time) {
 	}
 
 	// Move camera - update target position and rotation
-	cam.move(tm->position, eulerAngles(tm->orientation));
+	//cam.move(tm->position, eulerAngles(tm->orientation));
 
 	// Update the camera
 	cam.update(delta_time);
@@ -222,6 +223,8 @@ bool update(float delta_time) {
 
 	return true;
 }
+
+
 
 bool render() {
 	// !!!!!!!!!!!!!!! FIRST PASS !!!!!!!!!!!!!!!!
@@ -285,7 +288,7 @@ bool render() {
 	glUniformMatrix4fv(motion_blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind tempframe to TU 0.
-	renderer::bind(temp_frame.get_depth(), 0);
+	renderer::bind(temp_frame.get_frame(), 0);
 
 	// Bind frames[(current_frame + 1) % 2] to TU 1.
 	renderer::bind(frames[(current_frame+1)%2].get_depth(), 1);
@@ -313,7 +316,7 @@ bool render() {
 	glUniformMatrix4fv(motion_blur.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 
 	// Bind texture from frame buffer
-	renderer::bind(frames[current_frame].get_depth(), 0);
+	renderer::bind(frames[current_frame].get_frame(), 0);
 
 	// Set the uniform
 	glUniform1i(motion_blur.get_uniform_location("tex"), 0);

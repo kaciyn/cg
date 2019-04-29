@@ -24,10 +24,12 @@ bool load_content() {
 	vector<vec3> positions{ vec3(-1.0f, -1.0f, 0.0f), vec3(1.0f, -1.0f, 0.0f), vec3(-1.0f, 1.0f, 0.0f),
 					 vec3(1.0f, 1.0f, 0.0f) };
 	vector<vec2> tex_coords{ vec2(0.0, 0.0), vec2(1.0f, 0.0f), vec2(0.0f, 1.0f), vec2(1.0f, 1.0f) };
-
+	 screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+  screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+  screen_quad.set_type(GL_TRIANGLE_STRIP);
 	// *********************************
-	screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
-	screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
+	// screen_quad.add_buffer(positions, BUFFER_INDEXES::POSITION_BUFFER);
+	// screen_quad.add_buffer(tex_coords, BUFFER_INDEXES::TEXTURE_COORDS_0);
 
 	// Create plane mesh
 	meshes["plane"] = mesh(geometry_builder::create_plane());

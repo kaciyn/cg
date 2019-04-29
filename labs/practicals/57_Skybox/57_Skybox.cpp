@@ -72,10 +72,7 @@ bool load_content() {
 }
 float theta;
 bool update(float delta_time) {
-	
-
-
-	theta += pi<float>() * delta_time;
+		theta += pi<float>() * delta_time;
 	// The ratio of pixels to rotation - remember the fov
 	static double ratio_width = quarter_pi<float>() / static_cast<float>(renderer::get_screen_width());
 	static double ratio_height =
