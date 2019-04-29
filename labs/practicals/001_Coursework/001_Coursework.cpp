@@ -51,6 +51,8 @@ bool load_content() {
 	meshes["sphere"] = mesh(geometry_builder::create_sphere(20, 20));
 	meshes["torus"] = mesh(geometry_builder::create_torus(20, 20, 1.0f, 5.0f));
 
+	meshes["light"] = mesh(geometry_builder::create_cylinder(20, 20));
+
 	// Transform objects
 	meshes["box"].get_transform().scale = vec3(5.0f, 5.0f, 5.0f);
 	meshes["box"].get_transform().translate(vec3(-10.0f, 2.5f, -30.0f));
@@ -96,6 +98,7 @@ bool load_content() {
 	textures["torus"] = texture("textures/grass.jpg");
 	textures["sword"] = texture("textures/sword.jpg");
 	textures["crow"] = texture("textures/black.jpg");
+	textures["light"] = texture("textures/black.jpg");
 
 
 	//Set mesh materials
@@ -147,9 +150,11 @@ bool load_content() {
 	// Set spot properties
 	spot.set_position(vec3(30.0f, 20.0f, 0.0f));
 	spot.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	spot.set_direction(normalize(-spot.get_position()));
+	spot.set_direction(normalize(vec3(1.0f, 1.0f, -1.0f)));
 	spot.set_range(500.0f);
 	spot.set_power(10.0f);
+	meshes["light"].get_transform().position = (spot.get_position());
+	meshes["light"].get_transform().orientation = vec3(normalize(-spot.get_position()));
 
 	// Load in shaders
 	eff.add_shader("001_Coursework/shader.vert", GL_VERTEX_SHADER);
@@ -198,27 +203,33 @@ bool update(float delta_time) {
 	// Rotate the sphere
 	meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
 
-	// Use keyboard to rotate spotlight - QE rotate on z-axis
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_Q)) {
-		spot.rotate(vec3(0.0f, 0.0f, -pi<float>() * delta_time));
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT_SHIFT))
+	{
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_UP)) {
+			spot.move(vec3(0, delta_time * speed, 0));
+		}
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_DOWN)) {
+			spot.move(vec3(0, -delta_time * speed, 0));
+		}
 	}
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_E)) {
-		spot.rotate(vec3(0.0f, 0.0f, pi<float>() * delta_time));
+	else
+	{
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_UP)) {
+			spot.move(vec3(0, 0, -delta_time * speed));
+		}
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_DOWN)) {
+			spot.move(vec3(0, 0, delta_time * speed));
+		}
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT)) {
+			spot.move(vec3(-delta_time * speed, 0, 0));
+		}
+		if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT)) {
+			spot.move(vec3(delta_time * speed, 0, 0));
+		}
+
 	}
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_UP)) {
-		spot.move(vec3(0, 0, -delta_time * speed));
-	}
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_DOWN)) {
-		spot.move(vec3(0, 0, delta_time * speed));
-	}
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT)) {
-		spot.move(vec3(-delta_time * speed, 0, 0));
-	}
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT)) {
-		spot.move(vec3(delta_time * speed, 0, 0));
-	}
-	
 	//free camera 
 
 		// Rotate cameras by delta
@@ -247,12 +258,13 @@ bool update(float delta_time) {
 	cursor_x = current_x;
 	cursor_y = current_y;
 
-
 	// Update the shadow map light_position from the spot light
 	shadow.light_position = spot.get_position();
 
 	// do the same for light_dir property
 	shadow.light_dir = spot.get_direction();
+
+	meshes["light"].get_transform().position = (spot.get_position());
 
 	return true;
 }
