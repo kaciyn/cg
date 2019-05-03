@@ -308,7 +308,7 @@ bool render() {
 	// Set render target back to the screen
 	renderer::set_render_target();
 
-	//Bid Dof effect
+	//Bind Dof effect
 	renderer::bind(dof);
 
 	// Set MVP matrix uniform, identity

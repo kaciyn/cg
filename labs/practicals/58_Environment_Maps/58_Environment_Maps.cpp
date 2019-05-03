@@ -145,7 +145,6 @@ bool render() {
 
 	// Set MVP matrix uniform
 	glUniformMatrix4fv(sky_eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
-	//TODO this throws a debug error  
 
 	// Bind cubemap to TU 0
 	renderer::bind(cube_map, 0);
@@ -170,7 +169,7 @@ bool render() {
 	V = cam.get_view();
 	P = cam.get_projection();
 	MVP = P * V * M;
-	   
+
 	// Set MVP matrix uniform
 	glUniformMatrix4fv(eff.get_uniform_location("MVP"), 1, GL_FALSE, value_ptr(MVP));
 

@@ -8,25 +8,16 @@ using namespace glm;
 map<string, mesh> meshes;
 effect shadow_eff;
 texture tex;
-target_camera cam;
+// target_camera cam;
 spot_light spot;
 shadow_map shadow;
+free_camera cam;
 
 bool load_content() {
 	// *********************************
 	// Create shadow map- use screen size
 	shadow = shadow_map(renderer::get_screen_width(), renderer::get_screen_height());
-	// Create plane mesh
-	meshes["plane"] = mesh(geometry_builder::create_plane());
-
-	// Create "teapot" mesh by loading in models/teapot.obj
-	meshes["teapot"] = mesh(geometry("models/teapot.obj"));
-
-	// Need to rotate the teapot on x by negative pi/2
-		// Scale the teapot - (0.1, 0.1, 0.1)
-	meshes["teapot"].get_transform().orientation = vec3(-half_pi<float>(), 0.0f, 0.0f);
-	meshes["teapot"].get_transform().scale = vec3(0.1f, 0.1f, 0.1f);
-
+	
 	// ***********************
 	// Set materials
 	// - all emissive is black
@@ -68,8 +59,8 @@ bool load_content() {
 	shadow_eff.build();
 
 	// Set camera properties
-	cam.set_position(vec3(0.0f, 20.0f, -30.0f));
-	cam.set_target(vec3(0.0f, 0.0f, 0.0f));
+	cam.set_position(vec3(0.0f, 10.0f, 0.0f));
+	cam.set_target(vec3(-25.0f, 10.0f, -25.0f));
 	cam.set_projection(quarter_pi<float>(), renderer::get_screen_aspect(), 0.1f, 1000.0f);
 	return true;
 }
@@ -89,7 +80,7 @@ bool update(float delta_time) {
 	if (glfwGetKey(renderer::get_window(), 'S') == GLFW_PRESS) {
 		shadow.buffer->save("test.png");
 	}
-
+	
 	cam.update(delta_time);
 
 	return true;

@@ -28,8 +28,7 @@ struct material {
 #endif
 
 // Forward declarations of used functions
-vec4 calculate_spot(in spot_light spot, in material mat, in vec3 position, in vec3 normal, in vec3 view_dir,
-                    in vec4 tex_colour);
+vec4 calculate_spot(in spot_light spot, in material mat, in vec3 position, in vec3 normal, in vec3 view_dir,in vec4 tex_colour);
 float calculate_shadow(in sampler2D shadow_map, in vec4 light_space_pos);
 
 // Spot light being used in the scene
@@ -59,6 +58,7 @@ void main() {
   // *********************************
   // Calculate shade factor
   float shade_factor=calculate_shadow(shadow_map,light_space_pos);
+     	  
   // Calculate view direction, normalize it
   vec3 view_dir=normalize(eye_pos-position);
 
@@ -66,55 +66,10 @@ void main() {
   vec4 tex_colour=texture(tex,tex_coord);
 
   // Calculate spot light
-
-   // *********************************
-  // Calculate direction to the light
-  vec3 dir=normalize(spot.position-position);
-
-  // Calculate distance to light
- float d=distance(spot.position,position);
-
-  // Calculate attenuation value
-  float kds=(spot.constant+(spot.linear*d)+(spot.quadratic*pow(d,2)));
-  vec4 att=(1/kds)*spot.light_colour;
-
-  // Calculate spot light intensity
-  vec4 spot_intensity=att*pow(max(dot(spot.direction,-dir),0),spot.power);
-
-  // Calculate light colour
-	vec4 light_colour=spot.light_colour;
-  // *********************************
-     // Calculate k
-  float k = max(dot(normal, dir), 0.0);
-
-  // Calculate diffuse
-  vec4 diffuse = k * (mat.diffuse_reflection * light_colour);
-
-  // Calculate half vector
-  vec3 half_vector=normalize(dir+view_dir);
-
-  // Calculate specular component
-  float n_h=dot(normal,half_vector);
-  float max_n_h=max(n_h,0.0f);
-  float specular_intensity=pow(max_n_h,mat.shininess);
-  vec4 specular=specular_intensity*mat.specular_reflection*light_colour;
-
-  // Calculate primary colour component
-  vec4 primary=mat.emissive+diffuse;
-
-  // Calculate final colour - remember alpha
-  vec4 secondary=specular;
-
-  //set alphas
-  primary.a = 1.0f;
-  secondary.a = 1.0f;
-  light_colour.a=1.0f;
-
-  //calculate colour
-   colour=primary*tex_colour+secondary;
+  vec4 calculated_colour=calculate_spot(spot,mat,position,normal,view_dir,tex_colour);
 
   // Scale colour by shade
- colour= colour*shade_factor;
+ colour= calculated_colour*shade_factor;
   //Ensure alpha is 1.0
   colour.a=1.0f;
   // *********************************

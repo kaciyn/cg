@@ -280,6 +280,9 @@ bool update(float delta_time) {
 	// The target object
 	static mesh &target_mesh = meshes["chaser"];
 
+	if (glfwGetKey(renderer::get_window(), 'X') == GLFW_PRESS)
+		shadow.buffer->save("test.png");
+
 	// Use keyboard to rotate target_mesh - QE rotate on y-axis
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_Q)) {
 		target_mesh.get_transform().rotate(vec3(0.0f, -pi<float>() * delta_time, 0.0f));

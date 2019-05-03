@@ -113,14 +113,16 @@ bool load_content() {
   light.set_light_colour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
  
   // Light direction to forward and down (normalized)
-  light.set_direction(normalize(vec3(1.0f, 1.0f, -1.0f)));
+  light.set_direction(normalize(vec3(1.0f, -1.0f, 1.0f)));
 
   // Set range to 20
-  light.set_range(20.0f);
+  light.set_range(50.0f);
 
   // Set power to 1
   light.set_power(1.0f);
-
+  light.set_constant_attenuation(0.05f);
+  light.set_linear_attenuation(0.01f);
+  light.set_quadratic_attenuation(0.01f);
   // Load in shaders
   eff.add_shader("50_Spot_Light/spot.vert", GL_VERTEX_SHADER);
   eff.add_shader("50_Spot_Light/spot.frag", GL_FRAGMENT_SHADER);
@@ -139,7 +141,7 @@ bool load_content() {
 
 bool update(float delta_time) {
   // Range of the spot light
-  static float range = 20.0f;
+  // static float range = 20.0f;
 
   // *********************************
 
@@ -159,13 +161,13 @@ bool update(float delta_time) {
 	  light.move(vec3(delta_time*speed, 0, 0));
   }
 
-  // O and P to change range
-  if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
-	  range += delta_time * 1.0f;
-  }
-  if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
-	  range -= delta_time * 1.0f;
-  }
+  // // O and P to change range
+  // if (glfwGetKey(renderer::get_window(), GLFW_KEY_O)) {
+	 //  range += delta_time * 1.0f;
+  // }
+  // if (glfwGetKey(renderer::get_window(), GLFW_KEY_P)) {
+	 //  range -= delta_time * 1.0f;
+  // }
 
   // Cursor keys to rotate camera on X and Y axis
 
@@ -199,7 +201,7 @@ bool update(float delta_time) {
      // *********************************
 
   // Set range
-  light.set_range(range);
+  // light.set_range(range);
 
   // Rotate the sphere
   meshes["sphere"].get_transform().rotate(vec3(0.0f, half_pi<float>(), 0.0f) * delta_time);
